@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hedging EA – State Loss Calculator</title>
+
+<style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#0b1220;
+    color:#e5e7eb;
+    margin:0;
+}
+
+.container{
+    max-width:920px;
+    margin:30px auto;
+    background:#111a2e;
+    padding:22px;
+    border-radius:12px;
+    box-shadow:0 0 30px rgba(0,0,0,0.4);
+}
+
+h2{
+    margin-top:0;
+    color:#38bdf8;
+}
+
+label{
+    font-size:14px;
+    opacity:0.9;
+}
+
+input,select,button{
+    width:100%;
+    padding:10px;
+    margin:6px 0 14px;
+    border-radius:6px;
+    border:none;
+    outline:none;
+    font-size:14px;
+}
+
+input,select{
+    background:#020617;
+    color:#fff;
+    border:1px solid #1e293b;
+}
+
+button{
+    background:#0ea5e9;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+button:hover{
+    background:#38bdf8;
+}
+
+table{
+    width:100%;
+    margin-top:22px;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #334155;
+    text-align:center;
+}
+
+th{
+    color:#7dd3fc;
+    font-weight:600;
+}
+
+.buy{color:#22c55e;font-weight:bold;}
+.sell{color:#ef4444;font-weight:bold;}
+.loss{color:#f87171;font-weight:bold;}
+
+/* ===== AUTHOR BOX ===== */
+.author{
+    margin-top:28px;
+    padding:18px;
+    background:linear-gradient(135deg,#020617,#0f172a);
+    border-radius:10px;
+    border:1px solid #1e293b;
+}
+
+.author h3{
+    margin:0 0 8px;
+    color:#38bdf8;
+    font-size:18px;
+}
+
+.author p{
+    margin:4px 0;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.author a{
+    color:#7dd3fc;
+    text-decoration:none;
+}
+.author a:hover{
+    text-decoration:underline;
+}
+
+.footer{
+    text-align:center;
+    margin-top:12px;
+    font-size:12px;
+    opacity:0.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>📊 Hedging EA – State Loss Calculator</h2>
+
+<label>Lệnh bắt đầu</label>
+<select id="start">
+    <option value="BUY">Buy</option>
+    <option value="SELL">Sell</option>
+</select>
+
+<label>Lot ban đầu (L0)</label>
+<input id="lot0" value="0.01">
+
+<label>Hệ số nhân lot (k)</label>
+<input id="k" value="2">
+
+<label>Hedging Zone (point)</label>
+<input id="zone" value="100">
+
+<label>Giá trị 1 point / 1 lot ($)</label>
+<input id="value" value="0.01">
+
+<label>Số lệnh hed (N)</label>
+<input id="n" value="3">
+
+<button onclick="calc()">TÍNH TOÁN</button>
+
+<table>
+<thead>
+<tr>
+<th>STT</th>
+<th>Loại lệnh</th>
+<th>Lot</th>
+<th>Lỗ trạng thái ($)</th>
+<th>Giá ↑↓ để BE (point)</th>
+</tr>
+</thead>
+<tbody id="result"></tbody>
+</table>
+
+<!-- ===== AUTHOR INFO ===== -->
+<div class="author">
+    <p>🚀 Nhận code Bot <b>MT4 / MT5</b>, Theo yêu cầu</p>
+    <p>📱 <b>Zalo:</b> 0964.822.327</p>
+    <p>📧 <b>Email:</b> tcodefx.auto@gmail.com</p>
+    <p>💬 <b>Telegram:</b> <a href="https://t.me/tCode_T95" target="_blank">t.me/tCode_T95</a></p>
+</div>
+
+<div class="footer">
+© 2026 – Hedging EA Tools by TCode
+</div>
+
+</div>
+
+<script>
+function calc(){
+    const start = document.getElementById("start").value;
+    const lot0 = parseFloat(document.getElementById("lot0").value);
+    const k = parseFloat(document.getElementById("k").value);
+    const zone = parseFloat(document.getElementById("zone").value);
+    const value = parseFloat(document.getElementById("value").value);
+    const n = parseInt(document.getElementById("n").value);
+
+    let orders = [];
+    let type = start;
+    let lot = lot0;
+
+    for(let i=0;i<=n;i++){
+        orders.push({type, lot});
+        type = type==="BUY" ? "SELL" : "BUY";
+        lot *= k;
+    }
+
+    let tbody = document.getElementById("result");
+    tbody.innerHTML = "";
+
+    for(let i=0;i<orders.length;i++){
+        let loss = 0;
+        let curType = orders[i].type;
+
+        for(let j=0;j<i;j++){
+            if(orders[j].type !== curType){
+                loss -= orders[j].lot * zone * value;
+            }
+        }
+
+        let bePoint = loss===0 ? 0 :
+            Math.abs(loss) / (orders[i].lot * value);
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${i}</td>
+            <td class="${orders[i].type==="BUY"?"buy":"sell"}">${orders[i].type}</td>
+            <td>${orders[i].lot.toFixed(2)}</td>
+            <td class="loss">${loss.toFixed(2)}</td>
+            <td>${orders[i].type==="BUY"?"↑":"↓"} ${bePoint.toFixed(1)}</td>
+        </tr>`;
+    }
+}
+</script>
+
+</body>
+</html>
