@@ -24,14 +24,114 @@ body{background:var(--bg0);color:var(--text1);font-family:var(--body);font-size:
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg0);}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px;}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,12,16,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
-.nav-logo{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:6px;}
-.nav-logo span{color:var(--text4);font-weight:400;font-size:11px;}
-.nav-links{display:flex;gap:2px;list-style:none;}
-.nav-links a{color:var(--text4);text-decoration:none;font-size:11px;font-family:var(--mono);padding:5px 10px;border-radius:4px;transition:all .2s;}
-.nav-links a:hover{color:var(--gold);background:var(--gold-dim);}
-@media(max-width:640px){.nav-links{display:none;}}
+/* ══ LANGUAGE SWITCHER ══ */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px;
+  flex-shrink: 0;
+}
+.lang-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  background: transparent;
+  color: var(--text4);
+  letter-spacing: .5px;
+}
+.lang-btn.active {
+  background: var(--gold);
+  color: #000;
+}
+.lang-btn:hover:not(.active) {
+  color: var(--text2);
+  background: var(--bg4);
+}
+
+/* NAV — redesigned */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,12,16,.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav-left { display: flex; align-items: center; gap: 16px; }
+
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.nav-logo .slash { color: var(--text4); font-weight: 400; margin: 0 4px; }
+.nav-logo .sub { color: var(--text3); font-weight: 400; font-size: 10px; }
+
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--buy-dim);
+  border: 1px solid rgba(14,203,129,.25);
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--buy);
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+.nav-badge .dot {
+  width: 5px; height: 5px;
+  background: var(--buy);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+.nav-links {
+  display: flex;
+  gap: 2px;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--text4);
+  text-decoration: none;
+  font-size: 10px;
+  font-family: var(--mono);
+  padding: 5px 9px;
+  border-radius: 4px;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--gold); background: var(--gold-dim); }
+
+@media(max-width:900px) { .nav-links { display: none; } }
+@media(max-width:500px) { .nav-badge { display: none; } }
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease;}
@@ -52,24 +152,230 @@ h2 .accent{color:var(--gold);}
 .btn-outline{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--text2);font-family:var(--mono);font-size:12px;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid var(--border);transition:all .2s;cursor:pointer;}
 .btn-outline:hover{color:var(--gold);border-color:var(--border2);background:var(--gold-dim);}
 
-/* ═══ HERO ═══ */
-#hero{min-height:100vh;display:flex;align-items:center;padding-top:56px;overflow:hidden;}
-#hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(240,185,11,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(240,185,11,.03) 1px,transparent 1px);background-size:54px 54px;z-index:0;}
-.hero-content{position:relative;z-index:2;max-width:760px;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--border2);padding:5px 13px;border-radius:100px;font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:26px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
-.hero-badge .dot{width:5px;height:5px;background:var(--buy);border-radius:50%;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.7);}}
-.hero-title{font-family:var(--mono);font-size:clamp(32px,7vw,68px);font-weight:700;line-height:1.0;letter-spacing:-2px;margin-bottom:6px;opacity:0;animation:fadeUp .7s ease .2s forwards;}
-.hero-title .t{color:var(--gold);}
-.hero-title .rest{color:var(--text2);font-weight:400;font-size:.56em;display:block;letter-spacing:-1px;margin-top:4px;}
-.hero-tagline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:24px;opacity:0;animation:fadeUp .7s ease .3s forwards;}
-.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--text2);}
-.tag.buy{border-color:rgba(14,203,129,.3);color:var(--buy);}
-.tag.sell{border-color:rgba(246,70,93,.3);color:var(--sell);}
-.tag.gold{border-color:var(--border2);color:var(--gold);}
-.hero-desc{font-size:14px;color:var(--text2);line-height:1.75;max-width:580px;margin-bottom:32px;opacity:0;animation:fadeUp .7s ease .4s forwards;}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease .5s forwards;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+/* ═══ HERO — redesigned ═══ */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 60px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Animated grid background */
+#hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(240,185,11,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,185,11,.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0;
+  animation: gridDrift 20s linear infinite;
+}
+@keyframes gridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 60px 60px; }
+}
+
+/* Glow orbs */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-orb-1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(240,185,11,.07) 0%, transparent 70%);
+  top: 10%; right: -5%;
+}
+.hero-orb-2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(14,203,129,.06) 0%, transparent 70%);
+  bottom: 20%; left: 40%;
+}
+
+/* Vertical rule left of hero */
+.hero-vline {
+  position: absolute;
+  left: 24px;
+  top: 60px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+/* Stat bar */
+.hero-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp .6s ease .05s forwards;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+}
+.hero-stat {
+  padding: 10px 20px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hero-stat:last-child { border-right: none; }
+.hs-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.hs-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text1);
+}
+.hs-val.green { color: var(--buy); }
+.hs-val.gold  { color: var(--gold); }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-dim);
+  border: 1px solid var(--border2);
+  padding: 5px 13px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: fadeUp .6s ease .1s forwards;
+}
+.hero-badge .dot {
+  width: 5px; height: 5px;
+  background: var(--buy);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.7);} }
+
+.hero-title {
+  font-family: var(--mono);
+  font-size: clamp(40px, 7.5vw, 76px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp .7s ease .2s forwards;
+}
+.hero-title .t { color: var(--gold); }
+.hero-title .sub {
+  display: block;
+  font-size: .48em;
+  color: var(--text3);
+  font-weight: 400;
+  letter-spacing: -.5px;
+  margin-top: 6px;
+  line-height: 1.3;
+}
+.hero-title .sub em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.hero-tagline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp .7s ease .3s forwards;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text2);
+}
+.tag.buy  { border-color: rgba(14,203,129,.3);  color: var(--buy); }
+.tag.sell { border-color: rgba(246,70,93,.3);   color: var(--sell); }
+.tag.gold { border-color: var(--border2);       color: var(--gold); }
+
+.hero-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.8;
+  max-width: 580px;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp .7s ease .4s forwards;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp .7s ease .5s forwards;
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;} }
+
+/* Scrolldown indicator */
+.hero-scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  animation: fadeUp .8s ease 1s forwards;
+  z-index: 2;
+}
+.hero-scroll span {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text4);
+  letter-spacing: 2px;
+}
+.hero-scroll-arrow {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--text4), transparent);
+  animation: scrollPulse 2s ease infinite;
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: .3; transform: scaleY(1); }
+  50%      { opacity: 1; transform: scaleY(1.2); }
+}
 
 /* ═══ HOW ═══ */
 #how{background:var(--bg1);}
@@ -90,7 +396,7 @@ h2 .accent{color:var(--gold);}
 /* ═══ VIDEO DEMO ═══ */
 #videodemo{background:var(--bg0);}
 
-/* ═══ ZONE / Cơ Chế Hoạt Động ═══ */
+/* ═══ ZONE ═══ */
 #zone{background:var(--bg1);}
 .zone-rules-full{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 @media(max-width:768px){.zone-rules-full{grid-template-columns:1fr;}}
@@ -112,49 +418,25 @@ h2 .accent{color:var(--gold);}
 .rule-title{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:3px;}
 .rule-desc{font-size:12px;color:var(--text3);line-height:1.5;}
 
-/* ═══ SETTINGS SECTION ═══ */
+/* ═══ SETTINGS ═══ */
 #settings{background:var(--bg0);}
-
-/* Tab buttons */
-.stab{
-  font-family:var(--mono);font-size:11px;font-weight:700;
-  padding:9px 16px;border:1px solid var(--border);border-bottom:none;
-  border-radius:8px 8px 0 0;background:var(--bg2);color:var(--text4);
-  cursor:pointer;transition:all .15s;position:relative;top:1px;
-}
+.stab{font-family:var(--mono);font-size:11px;font-weight:700;padding:9px 16px;border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;background:var(--bg2);color:var(--text4);cursor:pointer;transition:all .15s;position:relative;top:1px;}
 .stab:hover{color:var(--text2);background:var(--bg3);}
 .stab.active{background:var(--bg2);color:var(--gold);border-color:var(--border);border-bottom-color:var(--bg2);z-index:2;}
-
-/* Table rows */
-.srow{
-  display:grid;grid-template-columns:2fr 1fr 3fr;
-  border-bottom:1px solid rgba(43,47,54,.5);
-  transition:background .15s;
-}
+.srow{display:grid;grid-template-columns:2fr 1fr 3fr;border-bottom:1px solid rgba(43,47,54,.5);transition:background .15s;}
 .srow:last-child{border-bottom:none;}
 .srow:hover{background:rgba(255,255,255,0.025);}
-
 .scell-name{padding:13px 18px;display:flex;align-items:flex-start;}
 .scell-def {padding:13px 18px;display:flex;align-items:flex-start;}
 .scell-desc{padding:13px 18px;font-size:12px;color:var(--text3);line-height:1.6;}
-
 .sparam{font-family:var(--mono);font-size:11px;color:var(--gold);font-weight:700;line-height:1.5;}
 .sdef  {font-family:var(--mono);font-size:13px;color:var(--buy);font-weight:700;}
-
-/* Tip badges */
-.stip{
-  display:inline-block;margin-top:6px;font-family:var(--mono);font-size:10px;
-  padding:3px 10px;border-radius:4px;border-width:1px;border-style:solid;
-}
+.stip{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:4px;border-width:1px;border-style:solid;}
 .tip-green{color:var(--buy);background:var(--buy-dim);border-color:rgba(14,203,129,.25);}
 .tip-yellow{color:var(--gold);background:var(--gold-dim);border-color:var(--border2);}
 .tip-red{color:var(--sell);background:var(--sell-dim);border-color:rgba(246,70,93,.25);}
 .tip-blue{color:#5394ff;background:rgba(83,148,255,.1);border-color:rgba(83,148,255,.25);}
-
-@media(max-width:640px){
-  .srow{grid-template-columns:1fr;}
-  .scell-def{padding-top:0;}
-}
+@media(max-width:640px){.srow{grid-template-columns:1fr;}.scell-def{padding-top:0;}}
 
 /* ═══ FEATURES ═══ */
 #features{background:var(--bg1);}
@@ -207,15 +489,31 @@ h2 .accent{color:var(--gold);}
 
 footer{background:var(--bg1);border-top:1px solid var(--border);padding:20px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text4);}
 footer span{color:var(--gold);}
+
+/* ═══ I18N hidden/show ═══ */
+[data-vi], [data-en] {}
+.lang-vi [data-en] { display: none !important; }
+.lang-en [data-vi] { display: none !important; }
 </style>
 </head>
-<body>
+<body class="lang-vi">
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">T<span>CODE</span><span>/ XAUUSD Hedging EA</span></div>
+  <div class="nav-left">
+    <div class="nav-logo">
+      <span style="color:var(--gold)">T</span>CODE
+      <span class="slash">/</span>
+      <span class="sub">Hedging Master EA</span>
+    </div>
+    <div class="nav-badge">
+      <div class="dot"></div>
+      <span>XAUUSD · MT5 · v2.6</span>
+    </div>
+  </div>
+
   <ul class="nav-links">
-    <li><a href="#how">#how</a></li>
+    <li><a href="#how" data-vi>#how</a><a href="#how" data-en>#how</a></li>
     <li><a href="#videodemo">#demo</a></li>
     <li><a href="#zone">#zone</a></li>
     <li><a href="#settings">#settings</a></li>
@@ -223,279 +521,295 @@ footer span{color:var(--gold);}
     <li><a href="#lot">#lot</a></li>
     <li><a href="#cta">#contact</a></li>
   </ul>
+
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btnVI" onclick="setLang('vi')">VI</button>
+      <button class="lang-btn"        id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-vline"></div>
+
   <div class="container" style="position:relative;z-index:2;">
     <div class="hero-content">
-      <div class="hero-badge"><div class="dot"></div>XAUUSD · MT5 · EA v2.6 · HEDGING RECOVERY</div>
+
+      <!-- Stats bar -->
+      <div class="hero-stats">
+        <div class="hero-stat" style="background:var(--bg2);">
+          <span class="hs-label">PLATFORM</span>
+          <span class="hs-val gold">MetaTrader 5</span>
+        </div>
+        <div class="hero-stat" style="background:var(--bg2);">
+          <span class="hs-label">PAIR</span>
+          <span class="hs-val gold">XAUUSD</span>
+        </div>
+        <div class="hero-stat" style="background:var(--bg2);">
+          <span class="hs-label">VERSION</span>
+          <span class="hs-val">v2.6</span>
+        </div>
+        <div class="hero-stat" style="background:var(--bg2);">
+          <span class="hs-label">STRATEGY</span>
+          <span class="hs-val green">HEDGING</span>
+        </div>
+      </div>
+
+      <div class="hero-badge">
+        <div class="dot"></div>
+        <span data-vi>XAUUSD · MT5 · EA v2.6 · HEDGING RECOVERY</span>
+        <span data-en>XAUUSD · MT5 · EA v2.6 · HEDGING RECOVERY</span>
+      </div>
+
       <h1 class="hero-title">
         <span class="t">T</span>CODE
-        <span class="rest">Hedging Master EA</span>
+        <span class="sub">
+          Hedging Master EA &nbsp;—&nbsp;
+          <em data-vi>Tự Động Hóa XAUUSD</em>
+          <em data-en>XAUUSD Automation</em>
+        </span>
       </h1>
+
       <div class="hero-tagline">
         <span class="tag gold">XAUUSD Gold</span>
         <span class="tag buy">▲ Auto Buy</span>
         <span class="tag sell">▼ Auto Sell</span>
-        <span class="tag">Sideway Detection</span>
-        <span class="tag">Recovery Zone</span>
+        <span class="tag" data-vi>Sideway Detection</span>
+        <span class="tag" data-en>Sideway Detection</span>
+        <span class="tag" data-vi>Recovery Zone</span>
+        <span class="tag" data-en>Recovery Zone</span>
       </div>
+
       <p class="hero-desc">
-        Bot chuyên <strong style="color:var(--text1)"> đánh break</strong> — tự động nhận diện vùng Sideway,
-        vào lệnh khi Breakout, và dùng chiến lược
-        <strong style="color:var(--gold)">Hedging Recovery</strong> với lot tăng dần
-        để phục hồi vốn khi thị trường đảo chiều.
-        TrailingStop giúp gồng lãi khi giá break mạnh.
+        <span data-vi>
+          Bot chuyên <strong style="color:var(--text1)">đánh break</strong> — tự động nhận diện vùng Sideway,
+          vào lệnh khi Breakout, và dùng chiến lược
+          <strong style="color:var(--gold)">Hedging Recovery</strong> với lot tăng dần
+          để phục hồi vốn khi thị trường đảo chiều.
+          TrailingStop giúp gồng lãi khi giá break mạnh.
+        </span>
+        <span data-en>
+          A breakout-focused bot — auto-detects Sideway zones, enters on Breakout,
+          and uses a <strong style="color:var(--gold)">Hedging Recovery</strong> strategy
+          with escalating lot sizes to recover capital on reversals.
+          TrailingStop maximizes profit when price breaks strongly.
+        </span>
       </p>
+
       <div class="hero-actions">
-        <a href="https://t.me/TCode_TradingHeBot" target="_blank" class="btn-primary">✈️ Nhóm Trading Hệ Bot</a>
-        <a href="https://t.me/+3iZn3jSexOMzMzc1" target="_blank" class="btn-outline">📊 Nhóm Chuyên Hedging →</a>
+        <a href="https://t.me/TCode_TradingHeBot" target="_blank" class="btn-primary">
+          ✈️ <span data-vi>Nhóm Trading Hệ Bot</span><span data-en>Trading Bot Group</span>
+        </a>
+        <a href="https://t.me/+3iZn3jSexOMzMzc1" target="_blank" class="btn-outline">
+          📊 <span data-vi>Nhóm Chuyên Hedging →</span><span data-en>Hedging Community →</span>
+        </a>
       </div>
     </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span data-vi>SCROLL</span><span data-en>SCROLL</span>
+    <div class="hero-scroll-arrow"></div>
   </div>
 </section>
 
 <!-- HOW -->
 <section id="how">
   <div class="container">
-    <div class="section-label reveal">CƠ CHẾ HOẠT ĐỘNG</div>
-    <h2 class="reveal">4 Bước <span class="accent">Tự Động Hóa</span></h2>
-    <p class="section-desc reveal">Từ nhận diện thị trường → vào lệnh → hedge → thoát. Bot xử lý hoàn toàn tự động trên XAUUSD.</p>
+    <div class="section-label reveal">
+      <span data-vi>CƠ CHẾ HOẠT ĐỘNG</span>
+      <span data-en>HOW IT WORKS</span>
+    </div>
+    <h2 class="reveal">
+      <span data-vi>4 Bước <span class="accent">Tự Động Hóa</span></span>
+      <span data-en>4 Steps of <span class="accent">Automation</span></span>
+    </h2>
+    <p class="section-desc reveal">
+      <span data-vi>Từ nhận diện thị trường → vào lệnh → hedge → thoát. Bot xử lý hoàn toàn tự động trên XAUUSD.</span>
+      <span data-en>From market detection → entry → hedge → exit. The bot handles everything automatically on XAUUSD.</span>
+    </p>
     <div class="steps-grid reveal">
       <div class="step-card">
         <div class="step-num">STEP 01</div>
         <div class="step-icon si-y">🔍</div>
-        <div class="step-title">Xác Nhận Sideway</div>
-        <p class="step-desc">Bot theo dõi 16+ điểm giá. Biên độ &lt; 400 pips XAUUSD → xác nhận Sideway và vẽ Hedging Zone.</p>
+        <div class="step-title" data-vi>Xác Nhận Sideway</div>
+        <div class="step-title" data-en>Confirm Sideway</div>
+        <p class="step-desc" data-vi>Bot theo dõi 16+ điểm giá. Biên độ &lt; 400 pips XAUUSD → xác nhận Sideway và vẽ Hedging Zone.</p>
+        <p class="step-desc" data-en>Bot monitors 16+ price points. Amplitude &lt; 400 pips on XAUUSD → confirms Sideway and draws Hedging Zone.</p>
       </div>
       <div class="step-card">
         <div class="step-num">STEP 02</div>
         <div class="step-icon si-g">📐</div>
-        <div class="step-title">Vẽ Hedging Zone</div>
-        <p class="step-desc">Hình chữ nhật xuất hiện. <span style="color:var(--buy)">Phá cạnh trên → BUY</span>, <span style="color:var(--sell)">phá cạnh dưới → SELL</span>. Trader cũng tự vẽ hoặc vào lệnh thủ công.</p>
+        <div class="step-title" data-vi>Vẽ Hedging Zone</div>
+        <div class="step-title" data-en>Draw Hedging Zone</div>
+        <p class="step-desc" data-vi>Hình chữ nhật xuất hiện. <span style="color:var(--buy)">Phá cạnh trên → BUY</span>, <span style="color:var(--sell)">phá cạnh dưới → SELL</span>. Trader cũng tự vẽ hoặc vào lệnh thủ công.</p>
+        <p class="step-desc" data-en>Rectangle appears. <span style="color:var(--buy)">Break upper edge → BUY</span>, <span style="color:var(--sell)">break lower edge → SELL</span>. Traders can also draw manually or enter orders manually.</p>
       </div>
       <div class="step-card">
         <div class="step-num">STEP 03</div>
         <div class="step-icon si-r">⚡</div>
-        <div class="step-title">Kích Hoạt Hedge</div>
-        <p class="step-desc">Giá đảo chiều chạm cạnh đối diện → hedge lệnh ngược với lot × hệ số Level. HedLine vàng báo ngưỡng kế tiếp.</p>
+        <div class="step-title" data-vi>Kích Hoạt Hedge</div>
+        <div class="step-title" data-en>Activate Hedge</div>
+        <p class="step-desc" data-vi>Giá đảo chiều chạm cạnh đối diện → hedge lệnh ngược với lot × hệ số Level. HedLine vàng báo ngưỡng kế tiếp.</p>
+        <p class="step-desc" data-en>Price reverses to opposite edge → hedge with opposite lot × Level multiplier. Gold HedLine marks next threshold.</p>
       </div>
       <div class="step-card">
         <div class="step-num">STEP 04</div>
         <div class="step-icon si-y">🎯</div>
-        <div class="step-title">TP & Trailing</div>
-        <p class="step-desc">Đạt Target $250 → đóng tất cả. Break mạnh → TrailingStop 2 lớp gồng lãi tối đa trước khi chốt.</p>
+        <div class="step-title" data-vi>TP & Trailing</div>
+        <div class="step-title" data-en>TP & Trailing</div>
+        <p class="step-desc" data-vi>Đạt Target $250 → đóng tất cả. Break mạnh → TrailingStop 2 lớp gồng lãi tối đa trước khi chốt.</p>
+        <p class="step-desc" data-en>Target $250 reached → close all. Strong break → 2-layer TrailingStop maximizes profit before closing.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SƠ ĐỒ MÔ PHỎNG — Recovery Zone System (static infographic) -->
+<!-- SƠ ĐỒ MÔ PHỎNG -->
 <section id="videodemo" style="background:var(--bg0);padding:80px 24px;">
   <div class="container">
-    <div class="section-label reveal">SƠ ĐỒ MÔ PHỎNG</div>
-    <h2 class="reveal">Chu Kỳ <span class="accent">Hedging Thực Tế</span></h2>
-    <p class="section-desc reveal">Giá dao động trong Recovery Zone → lệnh Buy/Sell xen kẽ, lot nhân đôi mỗi lần → khi giá break mạnh ra ngoài, bên lot lớn hơn thắng, đóng tất cả chốt lãi.</p>
+    <div class="section-label reveal">
+      <span data-vi>SƠ ĐỒ MÔ PHỎNG</span>
+      <span data-en>SIMULATION DIAGRAM</span>
+    </div>
+    <h2 class="reveal">
+      <span data-vi>Chu Kỳ <span class="accent">Hedging Thực Tế</span></span>
+      <span data-en>Real <span class="accent">Hedging Cycle</span></span>
+    </h2>
+    <p class="section-desc reveal">
+      <span data-vi>Giá dao động trong Recovery Zone → lệnh Buy/Sell xen kẽ, lot nhân đôi mỗi lần → khi giá break mạnh ra ngoài, bên lot lớn hơn thắng, đóng tất cả chốt lãi.</span>
+      <span data-en>Price oscillates in Recovery Zone → alternating Buy/Sell orders, lots doubling each time → when price breaks out strongly, the larger lot side wins, closes all for profit.</span>
+    </p>
 
-    <!-- Main infographic SVG -->
     <div class="reveal" style="max-width:920px;margin:0 auto 32px;">
       <svg viewBox="0 0 920 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;border-radius:14px;overflow:hidden;" font-family="'Space Mono',monospace">
-        <!-- Background -->
         <rect width="920" height="440" fill="#0e1116"/>
-        <!-- Grid lines subtle -->
         <g stroke="rgba(255,255,255,0.025)" stroke-width="1">
-          <line x1="0" y1="55"  x2="920" y2="55"/>
-          <line x1="0" y1="110" x2="920" y2="110"/>
-          <line x1="0" y1="165" x2="920" y2="165"/>
-          <line x1="0" y1="220" x2="920" y2="220"/>
-          <line x1="0" y1="275" x2="920" y2="275"/>
-          <line x1="0" y1="330" x2="920" y2="330"/>
+          <line x1="0" y1="55"  x2="920" y2="55"/><line x1="0" y1="110" x2="920" y2="110"/>
+          <line x1="0" y1="165" x2="920" y2="165"/><line x1="0" y1="220" x2="920" y2="220"/>
+          <line x1="0" y1="275" x2="920" y2="275"/><line x1="0" y1="330" x2="920" y2="330"/>
           <line x1="0" y1="385" x2="920" y2="385"/>
         </g>
-
-        <!-- ══ TAKE PROFIT TOP LINE ══ -->
-        <line x1="40" y1="72" x2="880" y2="72" stroke="#f0b90b" stroke-width="2.5" stroke-dasharray="0"/>
+        <line x1="40" y1="72" x2="880" y2="72" stroke="#f0b90b" stroke-width="2.5"/>
         <rect x="760" y="55" width="120" height="22" rx="4" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
         <text x="820" y="70" fill="#f0b90b" font-size="11" font-weight="700" text-anchor="middle">TAKE PROFIT ↑</text>
-
-        <!-- ══ TAKE PROFIT BOTTOM LINE ══ -->
         <line x1="40" y1="368" x2="880" y2="368" stroke="#f0b90b" stroke-width="2.5"/>
         <rect x="760" y="351" width="120" height="22" rx="4" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
         <text x="820" y="366" fill="#f0b90b" font-size="11" font-weight="700" text-anchor="middle">TAKE PROFIT ↓</text>
-
-        <!-- ══ RECOVERY ZONE FILL ══ -->
         <rect x="40" y="158" width="840" height="124" fill="rgba(240,185,11,0.04)" rx="0"/>
-
-        <!-- BUY LINE (top of zone) -->
-        <line x1="40" y1="158" x2="880" y2="158" stroke="#0ecb81" stroke-width="2" stroke-dasharray="0"/>
-        <!-- SELL LINE (bottom of zone) -->
-        <line x1="40" y1="282" x2="880" y2="282" stroke="#f6465d" stroke-width="2" stroke-dasharray="0"/>
-
-        <!-- Zone label left -->
+        <line x1="40" y1="158" x2="880" y2="158" stroke="#0ecb81" stroke-width="2"/>
+        <line x1="40" y1="282" x2="880" y2="282" stroke="#f6465d" stroke-width="2"/>
         <text x="18" y="202" fill="#0ecb81" font-size="10" text-anchor="middle" transform="rotate(-90,18,202)">BUY LINE</text>
         <text x="18" y="310" fill="#f6465d" font-size="10" text-anchor="middle" transform="rotate(-90,18,310)">SELL LINE</text>
-
-        <!-- Recovery Zone brace -->
         <line x1="895" y1="158" x2="895" y2="282" stroke="rgba(240,185,11,0.5)" stroke-width="1.5"/>
         <line x1="890" y1="158" x2="895" y2="158" stroke="rgba(240,185,11,0.5)" stroke-width="1.5"/>
         <line x1="890" y1="282" x2="895" y2="282" stroke="rgba(240,185,11,0.5)" stroke-width="1.5"/>
         <rect x="856" y="196" width="36" height="28" rx="4" fill="rgba(240,185,11,0.1)"/>
         <text x="874" y="206" fill="#f0b90b" font-size="8" text-anchor="middle" font-weight="700">RECOV</text>
         <text x="874" y="218" fill="#f0b90b" font-size="8" text-anchor="middle" font-weight="700">ZONE</text>
-
-        <!-- ══ ZIGZAG PATH ══ -->
-        <!-- Dashed diagonal connectors (background) -->
         <g stroke="rgba(255,255,255,0.12)" stroke-width="1.2" stroke-dasharray="5,4" fill="none">
-          <!-- 1→2 -->  <line x1="148" y1="158" x2="250" y2="282"/>
-          <!-- 2→3 -->  <line x1="250" y1="282" x2="352" y2="158"/>
-          <!-- 3→4 -->  <line x1="352" y1="158" x2="454" y2="282"/>
-          <!-- 4→5 -->  <line x1="454" y1="282" x2="556" y2="158"/>
-          <!-- 5→6 -->  <line x1="556" y1="158" x2="658" y2="282"/>
-          <!-- 6→7 -->  <line x1="658" y1="282" x2="760" y2="158"/>
-          <!-- 7→8 -->  <line x1="760" y1="158" x2="760" y2="282"/>
+          <line x1="148" y1="158" x2="250" y2="282"/><line x1="250" y1="282" x2="352" y2="158"/>
+          <line x1="352" y1="158" x2="454" y2="282"/><line x1="454" y1="282" x2="556" y2="158"/>
+          <line x1="556" y1="158" x2="658" y2="282"/><line x1="658" y1="282" x2="760" y2="158"/>
+          <line x1="760" y1="158" x2="760" y2="282"/>
         </g>
-
-        <!-- Horizontal price path lines -->
-        <!-- Buy line segment -->
-        <line x1="90"  y1="158" x2="760" y2="158" stroke="rgba(14,203,129,0.25)" stroke-width="1" stroke-dasharray="0"/>
-        <!-- Sell line segment -->
-        <line x1="90"  y1="282" x2="760" y2="282" stroke="rgba(246,70,93,0.25)" stroke-width="1" stroke-dasharray="0"/>
-
-        <!-- ══ BREAK UP ARROW (from node 7 up to TP) ══ -->
+        <line x1="90" y1="158" x2="760" y2="158" stroke="rgba(14,203,129,0.25)" stroke-width="1"/>
+        <line x1="90" y1="282" x2="760" y2="282" stroke="rgba(246,70,93,0.25)" stroke-width="1"/>
         <defs>
-          <marker id="arrowUp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M0,8 L4,0 L8,8" fill="none" stroke="#0ecb81" stroke-width="1.5"/>
-          </marker>
-          <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M0,0 L4,8 L8,0" fill="none" stroke="#f6465d" stroke-width="1.5"/>
-          </marker>
-          <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M0,8 L4,0 L8,8" fill="none" stroke="#f0b90b" stroke-width="1.5"/>
-          </marker>
-          <filter id="glow-green">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <filter id="glow-red">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
+          <marker id="arrowUp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,8 L4,0 L8,8" fill="none" stroke="#0ecb81" stroke-width="1.5"/></marker>
+          <filter id="glow-green"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-red"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
-        <!-- Break UP arrow from node 7 to TP top -->
         <line x1="760" y1="150" x2="760" y2="82" stroke="#0ecb81" stroke-width="2" marker-end="url(#arrowUp)"/>
-        <!-- Trailing stop label -->
         <rect x="666" y="88" width="80" height="20" rx="4" fill="rgba(167,139,250,0.15)" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
         <text x="706" y="101" fill="#a78bfa" font-size="9" text-anchor="middle" font-weight="700">🛡 TRAILING SL</text>
-
-        <!-- ══ NODES — BUY (top line, green) ══ -->
-        <!-- Node 1 -->
         <circle cx="148" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
         <circle cx="148" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="148" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">1</text>
-        <!-- Node 3 -->
         <circle cx="352" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
         <circle cx="352" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="352" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">3</text>
-        <!-- Node 5 -->
         <circle cx="556" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
         <circle cx="556" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="556" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">5</text>
-        <!-- Node 7 -->
         <circle cx="760" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
         <circle cx="760" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="760" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">7</text>
-
-        <!-- ══ NODES — SELL (bottom line, red) ══ -->
-        <!-- Node 2 -->
         <circle cx="250" cy="282" r="20" fill="#f6465d" filter="url(#glow-red)" opacity="0.95"/>
         <circle cx="250" cy="282" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="250" y="287" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">2</text>
-        <!-- Node 4 -->
         <circle cx="454" cy="282" r="20" fill="#f6465d" filter="url(#glow-red)" opacity="0.95"/>
         <circle cx="454" cy="282" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="454" y="287" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">4</text>
-        <!-- Node 6 -->
         <circle cx="658" cy="282" r="20" fill="#f6465d" filter="url(#glow-red)" opacity="0.95"/>
         <circle cx="658" cy="282" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
         <text x="658" y="287" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">6</text>
-        <!-- Node 8 (greyed — potential) -->
         <circle cx="760" cy="282" r="18" fill="rgba(246,70,93,0.25)" stroke="#f6465d" stroke-width="1.5" stroke-dasharray="4,3"/>
         <text x="760" y="287" fill="#f6465d" font-size="11" font-weight="700" text-anchor="middle">8?</text>
-
-        <!-- ══ LOT LABELS — BUY side ══ -->
-        <!-- 1→ 0.01 lot, arrow down shows direction to sell zone -->
         <text x="108" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.01 lot</text>
         <text x="310" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.04 lot</text>
         <text x="514" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.16 lot</text>
         <text x="718" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.64 lot</text>
-
-        <!-- ══ LOT LABELS — SELL side ══ -->
         <text x="270" y="310" fill="#f6465d" font-size="10" font-weight="700" text-anchor="middle">0.02 lot</text>
         <text x="474" y="310" fill="#f6465d" font-size="10" font-weight="700" text-anchor="middle">0.08 lot</text>
         <text x="678" y="310" fill="#f6465d" font-size="10" font-weight="700" text-anchor="middle">0.32 lot</text>
         <text x="793" y="310" fill="rgba(246,70,93,0.5)" font-size="10" text-anchor="middle">1.28 lot?</text>
-
-        <!-- ══ FLOATING P&L LABELS ══ -->
-        <!-- At node 2: floating = -$2 -->
         <rect x="200" y="295" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
         <text x="226" y="308" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$2.00</text>
-        <!-- At node 3: floating = -$4 -->
         <rect x="326" y="130" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
         <text x="352" y="143" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$4.00</text>
-        <!-- At node 4: floating = -$10 -->
         <rect x="428" y="295" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
         <text x="454" y="308" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$10.00</text>
-        <!-- At node 5: floating = -$20 -->
         <rect x="530" y="130" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
         <text x="556" y="143" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$20.00</text>
-
-        <!-- ══ "First trade" and "Hedge trade" labels LEFT ══ -->
         <text x="55" y="163" fill="#0ecb81" font-size="10" font-weight="700">▲ BUY</text>
         <text x="55" y="177" fill="rgba(14,203,129,0.6)" font-size="9">First trade</text>
         <text x="55" y="287" fill="#f6465d" font-size="10" font-weight="700">▼ SELL</text>
         <text x="55" y="301" fill="rgba(246,70,93,0.6)" font-size="9">Hedge trade</text>
-
-        <!-- Zone size label -->
         <text x="480" y="226" fill="rgba(240,185,11,0.5)" font-size="10" text-anchor="middle">← HEDGING ZONE 200 pips →</text>
-
-        <!-- ══ BREAK OUT label ══ -->
         <rect x="680" y="100" width="72" height="40" rx="6" fill="rgba(14,203,129,0.12)" stroke="rgba(14,203,129,0.35)" stroke-width="1"/>
         <text x="716" y="116" fill="#0ecb81" font-size="9" font-weight="700" text-anchor="middle">🚀 BREAK</text>
-        <text x="716" y="130" fill="#0ecb81" font-size="9" text-anchor="middle">→ CHỐT LÃI</text>
-
-        <!-- ══ Title ══ -->
+        <text x="716" y="130" fill="#0ecb81" font-size="9" text-anchor="middle">→ PROFIT</text>
         <text x="460" y="35" fill="#eaecef" font-size="15" font-weight="700" text-anchor="middle">RECOVERY ZONE SYSTEM  —  XAUUSD Hedging Cycle</text>
         <line x1="200" y1="42" x2="720" y2="42" stroke="rgba(240,185,11,0.3)" stroke-width="1"/>
-
-        <!-- ══ Legend bottom ══ -->
-        <circle cx="60"  cy="415" r="6" fill="#0ecb81"/>
-        <text x="72" y="420" fill="#848e9c" font-size="10">BUY — giá mở tại cạnh trên zone</text>
-        <circle cx="280" cy="415" r="6" fill="#f6465d"/>
-        <text x="292" y="420" fill="#848e9c" font-size="10">SELL — giá mở tại cạnh dưới zone</text>
-        <rect x="500" y="409" width="10" height="10" rx="2" fill="rgba(240,185,11,0.4)" stroke="#f0b90b" stroke-width="1"/>
-        <text x="516" y="420" fill="#848e9c" font-size="10">Take Profit — khi break mạnh khỏi zone</text>
-        <rect x="740" y="409" width="10" height="10" rx="2" fill="rgba(167,139,250,0.4)" stroke="#a78bfa" stroke-width="1"/>
-        <text x="756" y="420" fill="#848e9c" font-size="10">Trailing Stop</text>
+        <circle cx="60" cy="415" r="6" fill="#0ecb81"/>
+        <text x="72" y="420" fill="#848e9c" font-size="10">BUY — upper edge</text>
+        <circle cx="220" cy="415" r="6" fill="#f6465d"/>
+        <text x="232" y="420" fill="#848e9c" font-size="10">SELL — lower edge</text>
+        <rect x="390" y="409" width="10" height="10" rx="2" fill="rgba(240,185,11,0.4)" stroke="#f0b90b" stroke-width="1"/>
+        <text x="406" y="420" fill="#848e9c" font-size="10">Take Profit — break out</text>
+        <rect x="600" y="409" width="10" height="10" rx="2" fill="rgba(167,139,250,0.4)" stroke="#a78bfa" stroke-width="1"/>
+        <text x="616" y="420" fill="#848e9c" font-size="10">Trailing Stop</text>
       </svg>
     </div>
 
-    <!-- Floating P&L table breakdown -->
+    <!-- Floating P&L table -->
     <div class="reveal" style="max-width:920px;margin:0 auto;">
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="padding:10px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-          <span style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;">BẢNG FLOATING TẠI THỜI ĐIỂM MỞ LỆNH</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--text4);">Zone=200pip · PipVal=$1/lot · Hệ số ×2</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;" data-vi>BẢNG FLOATING TẠI THỜI ĐIỂM MỞ LỆNH</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;" data-en>FLOATING TABLE AT ORDER OPEN MOMENT</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--text4);">Zone=200pip · PipVal=$1/lot · ×2</span>
         </div>
         <div style="overflow-x:auto;">
           <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;min-width:600px;">
             <thead>
               <tr style="background:var(--bg3);">
                 <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">#</th>
-                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">LỆNH</th>
-                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">GIÁ MỞ</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">
+                  <span data-vi>LỆNH</span><span data-en>ORDER</span>
+                </th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">
+                  <span data-vi>GIÁ MỞ</span><span data-en>OPEN PRICE</span>
+                </th>
                 <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">LOT</th>
-                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">LỆNH ĐANG LỖ</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">
+                  <span data-vi>LỆNH ĐANG LỖ</span><span data-en>LOSING ORDERS</span>
+                </th>
                 <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">FLOATING</th>
               </tr>
             </thead>
@@ -513,7 +827,7 @@ footer span{color:var(--gold);}
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">▼ SELL</span></td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--sell)">5048</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.02</td>
-                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">B0.01 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">B0.01 <span data-vi>lỗ</span><span data-en>loss</span> 200pip</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$2.00</span></td>
               </tr>
               <tr>
@@ -521,7 +835,7 @@ footer span{color:var(--gold);}
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--buy);font-weight:700;">▲ BUY</span></td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--buy)">5050</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.04</td>
-                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">S0.02 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">S0.02 <span data-vi>lỗ</span><span data-en>loss</span> 200pip</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$4.00</span></td>
               </tr>
               <tr>
@@ -529,7 +843,7 @@ footer span{color:var(--gold);}
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">▼ SELL</span></td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--sell)">5048</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.08</td>
-                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">B0.01+B0.04 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">B0.01+B0.04 <span data-vi>lỗ</span><span data-en>loss</span> 200pip</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$10.00</span></td>
               </tr>
               <tr>
@@ -537,15 +851,17 @@ footer span{color:var(--gold);}
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--buy);font-weight:700;">▲ BUY</span></td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--buy)">5050</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.16</td>
-                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">S0.02+S0.08 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">S0.02+S0.08 <span data-vi>lỗ</span><span data-en>loss</span> 200pip</td>
                 <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$20.00</span></td>
               </tr>
               <tr style="background:rgba(14,203,129,0.05);">
                 <td style="padding:8px 14px;color:var(--text3)" colspan="3">
-                  <span style="font-family:var(--mono);font-size:10px;color:var(--text4);">→ Giá break mạnh lên trên 5050...</span>
+                  <span style="font-family:var(--mono);font-size:10px;color:var(--text4);" data-vi>→ Giá break mạnh lên trên 5050...</span>
+                  <span style="font-family:var(--mono);font-size:10px;color:var(--text4);" data-en>→ Price breaks strongly above 5050...</span>
                 </td>
                 <td style="padding:8px 14px;" colspan="3">
-                  <span style="font-family:var(--mono);font-size:11px;color:var(--buy);font-weight:700;">✅ P&L chuyển dương → TrailingStop kéo lên → CHỐT LÃI</span>
+                  <span style="font-family:var(--mono);font-size:11px;color:var(--buy);font-weight:700;" data-vi>✅ P&L chuyển dương → TrailingStop kéo lên → CHỐT LÃI</span>
+                  <span style="font-family:var(--mono);font-size:11px;color:var(--buy);font-weight:700;" data-en>✅ P&L turns positive → TrailingStop pulls up → TAKE PROFIT</span>
                 </td>
               </tr>
             </tbody>
@@ -556,405 +872,535 @@ footer span{color:var(--gold);}
   </div>
 </section>
 
-<!-- ZONE — Vấn đề 2: Đổi thành "Cơ Chế Hoạt Động", xóa animation canvas -->
+<!-- ZONE -->
 <section id="zone">
   <div class="container">
-    <div class="section-label reveal">CẤU TRÚC ZONE</div>
-    <h2 class="reveal">Hedging Zone <span class="accent">— Cơ Chế Hoạt Động</span></h2>
-    <p class="section-desc reveal">Vùng hình chữ nhật là quy chiếu cốt lõi. Giá sideway → hedge xen kẽ buy/sell với lot tăng dần. Break hẳn một hướng → toàn bộ vị thế vào lãi.</p>
+    <div class="section-label reveal">
+      <span data-vi>CẤU TRÚC ZONE</span><span data-en>ZONE STRUCTURE</span>
+    </div>
+    <h2 class="reveal">
+      <span data-vi>Hedging Zone <span class="accent">— Cơ Chế Hoạt Động</span></span>
+      <span data-en>Hedging Zone <span class="accent">— How It Works</span></span>
+    </h2>
+    <p class="section-desc reveal">
+      <span data-vi>Vùng hình chữ nhật là quy chiếu cốt lõi. Giá sideway → hedge xen kẽ buy/sell với lot tăng dần. Break hẳn một hướng → toàn bộ vị thế vào lãi.</span>
+      <span data-en>The rectangle zone is the core reference. Sideways price → alternating buy/sell hedge with escalating lots. Clean break one direction → all positions turn profitable.</span>
+    </p>
     <div class="zone-rules-full reveal">
       <div class="rule-card entry">
         <div class="rule-dot rd-b"></div>
         <div>
-          <div class="rule-title">Vào Lệnh Đầu — Breakout Buy/Sell</div>
-          <p class="rule-desc">Khi giá phá cạnh trên Zone → EA vào <span style="color:var(--buy)">BUY</span> lot cơ bản (0.01). Phá cạnh dưới → vào <span style="color:var(--sell)">SELL</span>. Đây là điểm bắt đầu chu kỳ hedging.</p>
+          <div class="rule-title" data-vi>Vào Lệnh Đầu — Breakout Buy/Sell</div>
+          <div class="rule-title" data-en>First Entry — Breakout Buy/Sell</div>
+          <p class="rule-desc" data-vi>Khi giá phá cạnh trên Zone → EA vào <span style="color:var(--buy)">BUY</span> lot cơ bản (0.01). Phá cạnh dưới → vào <span style="color:var(--sell)">SELL</span>. Đây là điểm bắt đầu chu kỳ hedging.</p>
+          <p class="rule-desc" data-en>When price breaks the upper Zone edge → EA enters <span style="color:var(--buy)">BUY</span> with base lot (0.01). Breaks lower → enters <span style="color:var(--sell)">SELL</span>. This starts the hedging cycle.</p>
         </div>
       </div>
       <div class="rule-card top">
         <div class="rule-dot rd-g"></div>
         <div>
-          <div class="rule-title">Cạnh TRÊN — Ngưỡng Kích Hoạt Buy</div>
-          <p class="rule-desc">Khi đang giữ lệnh Sell mà giá tăng chạm cạnh trên → EA tự động thêm lệnh <span style="color:var(--buy)">BUY</span> với lot × hệ số Level. Các lệnh Buy đều có cùng giá mở = cạnh trên.</p>
+          <div class="rule-title" data-vi>Cạnh TRÊN — Ngưỡng Kích Hoạt Buy</div>
+          <div class="rule-title" data-en>UPPER Edge — Buy Trigger Level</div>
+          <p class="rule-desc" data-vi>Khi đang giữ lệnh Sell mà giá tăng chạm cạnh trên → EA tự động thêm lệnh <span style="color:var(--buy)">BUY</span> với lot × hệ số Level. Các lệnh Buy đều có cùng giá mở = cạnh trên.</p>
+          <p class="rule-desc" data-en>While holding Sell orders and price rises to upper edge → EA automatically adds a <span style="color:var(--buy)">BUY</span> order with lot × Level multiplier. All Buy orders share the same open price = upper edge.</p>
         </div>
       </div>
       <div class="rule-card bot">
         <div class="rule-dot rd-r"></div>
         <div>
-          <div class="rule-title">Cạnh DƯỚI — Ngưỡng Kích Hoạt Sell</div>
-          <p class="rule-desc">Khi đang giữ lệnh Buy mà giá giảm chạm cạnh dưới → EA thêm lệnh <span style="color:var(--sell)">SELL</span> với lot × hệ số. Các lệnh Sell đều có cùng giá mở = cạnh dưới.</p>
+          <div class="rule-title" data-vi>Cạnh DƯỚI — Ngưỡng Kích Hoạt Sell</div>
+          <div class="rule-title" data-en>LOWER Edge — Sell Trigger Level</div>
+          <p class="rule-desc" data-vi>Khi đang giữ lệnh Buy mà giá giảm chạm cạnh dưới → EA thêm lệnh <span style="color:var(--sell)">SELL</span> với lot × hệ số. Các lệnh Sell đều có cùng giá mở = cạnh dưới.</p>
+          <p class="rule-desc" data-en>While holding Buy orders and price drops to lower edge → EA adds a <span style="color:var(--sell)">SELL</span> order with lot × multiplier. All Sell orders share the same open price = lower edge.</p>
         </div>
       </div>
       <div class="rule-card hed">
         <div class="rule-dot rd-y"></div>
         <div>
-          <div class="rule-title">Nguyên Tắc Hedging — Buy/Sell Xen Kẽ</div>
-          <p class="rule-desc">Giá sideway: Buy@top → Sell@bot → Buy@top → Sell@bot... Lot tăng dần theo hệ số. <span style="color:var(--gold)">Mức lỗ floating = chiều rộng Zone × lot lệnh ngược chiều</span> đang âm.</p>
+          <div class="rule-title" data-vi>Nguyên Tắc Hedging — Buy/Sell Xen Kẽ</div>
+          <div class="rule-title" data-en>Hedging Principle — Alternating Buy/Sell</div>
+          <p class="rule-desc" data-vi>Giá sideway: Buy@top → Sell@bot → Buy@top → Sell@bot... Lot tăng dần theo hệ số. <span style="color:var(--gold)">Mức lỗ floating = chiều rộng Zone × lot lệnh ngược chiều</span> đang âm.</p>
+          <p class="rule-desc" data-en>Sideways: Buy@top → Sell@bot → Buy@top → Sell@bot... Lots increase by multiplier. <span style="color:var(--gold)">Floating loss = Zone width × opposite-side lot</span> in negative territory.</p>
         </div>
       </div>
       <div class="rule-card cycle">
         <div class="rule-dot rd-o"></div>
         <div>
-          <div class="rule-title">Break Hướng — Chốt Lãi Toàn Bộ</div>
-          <p class="rule-desc">Khi giá break mạnh khỏi Zone, side lot lớn hơn sẽ gồng lãi vượt qua lỗ tích lũy. Đạt target hoặc TrailingStop kích hoạt → <span style="color:var(--buy)">đóng tất cả, chốt lãi</span>.</p>
+          <div class="rule-title" data-vi>Break Hướng — Chốt Lãi Toàn Bộ</div>
+          <div class="rule-title" data-en>Directional Break — Close All for Profit</div>
+          <p class="rule-desc" data-vi>Khi giá break mạnh khỏi Zone, side lot lớn hơn sẽ gồng lãi vượt qua lỗ tích lũy. Đạt target hoặc TrailingStop kích hoạt → <span style="color:var(--buy)">đóng tất cả, chốt lãi</span>.</p>
+          <p class="rule-desc" data-en>When price breaks strongly out of Zone, the larger lot side profits beyond accumulated losses. Target reached or TrailingStop triggers → <span style="color:var(--buy)">close all, take profit</span>.</p>
         </div>
       </div>
       <div class="rule-card trail">
         <div class="rule-dot rd-p"></div>
         <div>
-          <div class="rule-title">TrailingStop — Gồng Lãi Khi Break Mạnh</div>
-          <p class="rule-desc">Khi P&L dương, đường <span style="color:var(--trail)">trailing tím</span> bám theo giá break. Giá quay đầu cán đường trail → đóng tất cả, chốt lãi tối đa, không để tuột lợi nhuận.</p>
+          <div class="rule-title" data-vi>TrailingStop — Gồng Lãi Khi Break Mạnh</div>
+          <div class="rule-title" data-en>TrailingStop — Ride Profit on Strong Break</div>
+          <p class="rule-desc" data-vi>Khi P&L dương, đường <span style="color:var(--trail)">trailing tím</span> bám theo giá break. Giá quay đầu cán đường trail → đóng tất cả, chốt lãi tối đa, không để tuột lợi nhuận.</p>
+          <p class="rule-desc" data-en>When P&L is positive, the <span style="color:var(--trail)">purple trailing line</span> follows the breaking price. Price reverses to hit the trail line → close all, maximize profit, don't let gains slip away.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SETTINGS — Tab-table UI từ code EA thật -->
+<!-- SETTINGS -->
 <section id="settings" style="background:var(--bg0);">
   <div class="container">
-    <div class="section-label reveal">CÀI ĐẶT EA</div>
-    <h2 class="reveal">Thông Số <span class="accent">Cài Đặt</span></h2>
-    <p class="section-desc reveal">Tên hiển thị trong MT5 — dễ hiểu cho trader mới. Nhấn từng nhóm để xem chi tiết.</p>
+    <div class="section-label reveal">
+      <span data-vi>CÀI ĐẶT EA</span><span data-en>EA SETTINGS</span>
+    </div>
+    <h2 class="reveal">
+      <span data-vi>Thông Số <span class="accent">Cài Đặt</span></span>
+      <span data-en>Configuration <span class="accent">Parameters</span></span>
+    </h2>
+    <p class="section-desc reveal">
+      <span data-vi>Tên hiển thị trong MT5 — dễ hiểu cho trader mới. Nhấn từng nhóm để xem chi tiết.</span>
+      <span data-en>Parameter names as shown in MT5 — easy to understand for new traders. Click each group for details.</span>
+    </p>
 
     <div class="reveal" id="settingsUI">
-      <!-- TAB BAR -->
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0;border-bottom:1px solid var(--border);">
-        <button class="stab active" data-tab="chung"    onclick="switchTab('chung')">⚙️ Cơ Bản</button>
-        <button class="stab"        data-tab="lot"      onclick="switchTab('lot')">📊 Quản Lý Lot</button>
-        <button class="stab"        data-tab="gio"      onclick="switchTab('gio')">🕐 Khung Giờ</button>
-        <button class="stab"        data-tab="thoat"    onclick="switchTab('thoat')">🎯 Thoát Lệnh</button>
-        <button class="stab"        data-tab="tia"      onclick="switchTab('tia')">✂️ Tỉa Lệnh</button>
+        <button class="stab active" data-tab="chung" onclick="switchTab('chung')">
+          ⚙️ <span data-vi>Cơ Bản</span><span data-en>Basic</span>
+        </button>
+        <button class="stab" data-tab="lot" onclick="switchTab('lot')">
+          📊 <span data-vi>Quản Lý Lot</span><span data-en>Lot Management</span>
+        </button>
+        <button class="stab" data-tab="gio" onclick="switchTab('gio')">
+          🕐 <span data-vi>Khung Giờ</span><span data-en>Time Filter</span>
+        </button>
+        <button class="stab" data-tab="thoat" onclick="switchTab('thoat')">
+          🎯 <span data-vi>Thoát Lệnh</span><span data-en>Exit Orders</span>
+        </button>
+        <button class="stab" data-tab="tia" onclick="switchTab('tia')">
+          ✂️ <span data-vi>Tỉa Lệnh</span><span data-en>Trim Orders</span>
+        </button>
       </div>
 
-      <!-- TAB PANELS -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;overflow:hidden;">
-
-        <!-- Header row -->
         <div style="display:grid;grid-template-columns:2fr 1fr 3fr;background:var(--bg3);border-bottom:2px solid var(--border);">
-          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;">TÊN TRONG MT5</div>
-          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;">MẶC ĐỊNH</div>
-          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;">GIẢI THÍCH</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;" data-vi>TÊN TRONG MT5</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;" data-en>MT5 PARAMETER</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;" data-vi>MẶC ĐỊNH</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;" data-en>DEFAULT</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;" data-vi>GIẢI THÍCH</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;" data-en>DESCRIPTION</div>
         </div>
 
-        <!-- ══ TAB: CƠ BẢN ══ -->
+        <!-- TAB: BASIC -->
         <div id="tab-chung" class="stab-panel">
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Magic Number (ID bot)</span></div>
+            <div class="scell-name"><span class="sparam">Magic Number</span></div>
             <div class="scell-def"><span class="sdef">0</span></div>
             <div class="scell-desc">
-              Con số định danh duy nhất cho EA. Khi chạy nhiều EA cùng lúc trên 1 tài khoản, mỗi EA phải có Magic Number khác nhau để không bị lẫn lệnh.
-              <span class="stip tip-blue">💡 Ví dụ: 1001, 1002, 2024...</span>
+              <span data-vi>Con số định danh duy nhất cho EA. Khi chạy nhiều EA cùng lúc trên 1 tài khoản, mỗi EA phải có Magic Number khác nhau để không bị lẫn lệnh.</span>
+              <span data-en>Unique identifier for this EA. When running multiple EAs on one account, each must have a different Magic Number to avoid order confusion.</span>
+              <span class="stip tip-blue">💡 <span data-vi>Ví dụ: 1001, 1002, 2024...</span><span data-en>Example: 1001, 1002, 2024...</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Lot khởi điểm</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Lot khởi điểm</span><span class="sparam" data-en>Starting Lot</span></div>
             <div class="scell-def"><span class="sdef">0.01</span></div>
             <div class="scell-desc">
-              Lot của lệnh đầu tiên khi bắt đầu chu kỳ hedging. Đây là cơ sở tính toán cho toàn bộ chuỗi lệnh tiếp theo.
-              <span class="stip tip-green">✓ $500 vốn → 0.01 · $2000 vốn → 0.03–0.05</span>
+              <span data-vi>Lot của lệnh đầu tiên khi bắt đầu chu kỳ hedging. Đây là cơ sở tính toán cho toàn bộ chuỗi lệnh tiếp theo.</span>
+              <span data-en>The lot size for the first order when starting a hedging cycle. This is the base for calculating all subsequent orders.</span>
+              <span class="stip tip-green">✓ <span data-vi>$500 vốn → 0.01 · $2000 vốn → 0.03–0.05</span><span data-en>$500 capital → 0.01 · $2000 capital → 0.03–0.05</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Biên độ vùng Hed (pip)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Biên độ vùng Hed (pip)</span><span class="sparam" data-en>Hedging Zone Width (pip)</span></div>
             <div class="scell-def"><span class="sdef">400</span></div>
             <div class="scell-desc">
-              Chiều rộng Hedging Zone — khoảng cách giữa cạnh trên (buy) và cạnh dưới (sell). Zone càng rộng thì ít bị hedge hơn, nhưng mỗi lần hedge thì lỗ lớn hơn.
-              <span class="stip tip-yellow">⚡ XAUUSD: 200–400 pip phổ biến nhất</span>
+              <span data-vi>Chiều rộng Hedging Zone — khoảng cách giữa cạnh trên (buy) và cạnh dưới (sell). Zone càng rộng thì ít bị hedge hơn, nhưng mỗi lần hedge thì lỗ lớn hơn.</span>
+              <span data-en>Hedging Zone width — distance between upper (buy) and lower (sell) edges. Wider zone = fewer hedges, but each hedge carries a larger floating loss.</span>
+              <span class="stip tip-yellow">⚡ <span data-vi>XAUUSD: 200–400 pip phổ biến nhất</span><span data-en>XAUUSD: 200–400 pip is most common</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Số lệnh tối đa</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Số lệnh tối đa</span><span class="sparam" data-en>Max Orders</span></div>
             <div class="scell-def"><span class="sdef">16</span></div>
             <div class="scell-desc">
-              Giới hạn số lệnh tối đa trong một chu kỳ hedging. EA sẽ dừng mở lệnh mới khi đạt ngưỡng này, bảo vệ tài khoản khỏi sideway kéo dài bất thường.
-              <span class="stip tip-red">⚠ Lệnh càng nhiều thì vốn yêu cầu càng lớn</span>
+              <span data-vi>Giới hạn số lệnh tối đa trong một chu kỳ hedging. EA sẽ dừng mở lệnh mới khi đạt ngưỡng này, bảo vệ tài khoản khỏi sideway kéo dài bất thường.</span>
+              <span data-en>Maximum number of orders in one hedging cycle. EA stops opening new orders when this threshold is reached, protecting the account from abnormally extended sideways.</span>
+              <span class="stip tip-red">⚠ <span data-vi>Lệnh càng nhiều thì vốn yêu cầu càng lớn</span><span data-en>More orders require more capital</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Lot tối đa / lệnh</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Lot tối đa / lệnh</span><span class="sparam" data-en>Max Lot / Order</span></div>
             <div class="scell-def"><span class="sdef">12</span></div>
             <div class="scell-desc">
-              Giới hạn trên cho mỗi lệnh đơn. Dù hệ số nhân tính ra lớn hơn, EA sẽ không bao giờ vào lệnh vượt quá mức này.
-              <span class="stip tip-blue">💡 Giúp kiểm soát rủi ro khi vào Level 3</span>
+              <span data-vi>Giới hạn trên cho mỗi lệnh đơn. Dù hệ số nhân tính ra lớn hơn, EA sẽ không bao giờ vào lệnh vượt quá mức này.</span>
+              <span data-en>Upper cap per single order. Even if the multiplier calculates a higher value, EA will never enter an order exceeding this limit.</span>
+              <span class="stip tip-blue">💡 <span data-vi>Giúp kiểm soát rủi ro khi vào Level 3</span><span data-en>Helps control risk when entering Level 3</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Kiểu vào lệnh</span></div>
-            <div class="scell-def"><span class="sdef">Lọc sideway</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Kiểu vào lệnh</span><span class="sparam" data-en>Entry Mode</span></div>
+            <div class="scell-def"><span class="sdef" data-vi>Lọc sideway</span><span class="sdef" data-en>Sideway filter</span></div>
             <div class="scell-desc">
-              <b style="color:var(--text1)">Vào lệnh ngay:</b> EA vào lệnh ngay khi nhận tín hiệu, không cần xác nhận sideway.<br>
-              <b style="color:var(--text1)">Lọc sideway rồi vào:</b> EA theo dõi 16+ điểm giá, xác nhận vùng tích lũy rồi mới vào lệnh khi giá breakout — an toàn hơn.
-              <span class="stip tip-green">✓ Mặc định dùng chế độ lọc sideway</span>
+              <b style="color:var(--text1)" data-vi>Vào lệnh ngay:</b><b style="color:var(--text1)" data-en>Instant entry:</b>
+              <span data-vi> EA vào lệnh ngay khi nhận tín hiệu, không cần xác nhận sideway.</span>
+              <span data-en> EA enters immediately on signal, no sideway confirmation needed.</span><br>
+              <b style="color:var(--text1)" data-vi>Lọc sideway rồi vào:</b><b style="color:var(--text1)" data-en>Sideway filter then enter:</b>
+              <span data-vi> EA theo dõi 16+ điểm giá, xác nhận vùng tích lũy rồi mới vào lệnh khi giá breakout — an toàn hơn.</span>
+              <span data-en> EA monitors 16+ price points, confirms accumulation zone, then enters on breakout — safer.</span>
+              <span class="stip tip-green">✓ <span data-vi>Mặc định dùng chế độ lọc sideway</span><span data-en>Default uses sideway filter mode</span></span>
             </div>
           </div>
         </div>
 
-        <!-- ══ TAB: QUẢN LÝ LOT ══ -->
+        <!-- TAB: LOT -->
         <div id="tab-lot" class="stab-panel" style="display:none;">
           <div class="srow" style="background:rgba(83,148,255,0.05);border-left:3px solid #5394ff;">
-            <div class="scell-name"><span class="sparam" style="color:#5394ff;">Hệ số nhân lot — Level 1</span></div>
+            <div class="scell-name"><span class="sparam" style="color:#5394ff;" data-vi>Hệ số nhân lot — Level 1</span><span class="sparam" style="color:#5394ff;" data-en>Lot Multiplier — Level 1</span></div>
             <div class="scell-def"><span class="sdef" style="color:#5394ff;">×3</span></div>
             <div class="scell-desc">
-              Hệ số nhân lot cho các lệnh đầu tiên (từ lệnh #1 đến trước lệnh bắt đầu LV2). Thường để ×2 hoặc ×3.
-              <span class="stip tip-blue">💡 0.01 → 0.03 → 0.09 → ... (với ×3)</span>
+              <span data-vi>Hệ số nhân lot cho các lệnh đầu tiên (từ lệnh #1 đến trước lệnh bắt đầu LV2). Thường để ×2 hoặc ×3.</span>
+              <span data-en>Lot multiplier for initial orders (from order #1 up to LV2 start). Typically set to ×2 or ×3.</span>
+              <span class="stip tip-blue">💡 0.01 → 0.03 → 0.09 → ... (×3)</span>
             </div>
           </div>
           <div class="srow" style="background:rgba(83,148,255,0.05);border-left:3px solid #5394ff;">
-            <div class="scell-name"><span class="sparam" style="color:#5394ff;">⏯ Bắt đầu Level 2 từ lệnh thứ</span></div>
+            <div class="scell-name"><span class="sparam" style="color:#5394ff;" data-vi>⏯ Bắt đầu Level 2 từ lệnh thứ</span><span class="sparam" style="color:#5394ff;" data-en>⏯ Start Level 2 from order #</span></div>
             <div class="scell-def"><span class="sdef" style="color:#5394ff;">#2</span></div>
             <div class="scell-desc">
-              Từ lệnh thứ bao nhiêu thì chuyển sang dùng hệ số LV2. Mặc định = 2 nghĩa là ngay từ lệnh thứ 2 đã dùng LV2.
-              <span class="stip tip-blue">💡 Giảm tốc độ tăng lot để kiểm soát rủi ro</span>
+              <span data-vi>Từ lệnh thứ bao nhiêu thì chuyển sang dùng hệ số LV2. Mặc định = 2 nghĩa là ngay từ lệnh thứ 2 đã dùng LV2.</span>
+              <span data-en>From which order number to switch to LV2 multiplier. Default = 2 means LV2 starts from the 2nd order.</span>
+              <span class="stip tip-blue">💡 <span data-vi>Giảm tốc độ tăng lot để kiểm soát rủi ro</span><span data-en>Slower lot growth to control risk</span></span>
             </div>
           </div>
           <div class="srow" style="background:rgba(83,148,255,0.05);border-left:3px solid #5394ff;">
-            <div class="scell-name"><span class="sparam" style="color:#5394ff;">Hệ số nhân lot — Level 2</span></div>
+            <div class="scell-name"><span class="sparam" style="color:#5394ff;" data-vi>Hệ số nhân lot — Level 2</span><span class="sparam" style="color:#5394ff;" data-en>Lot Multiplier — Level 2</span></div>
             <div class="scell-def"><span class="sdef" style="color:#5394ff;">×1.3</span></div>
             <div class="scell-desc">
-              Hệ số nhân nhỏ hơn — giúp chuỗi lot tăng chậm hơn ở giai đoạn giữa, giảm áp lực vốn khi sideway kéo dài.
-              <span class="stip tip-yellow">⚡ Ví dụ: 0.09 → 0.12 → 0.15 → 0.20...</span>
+              <span data-vi>Hệ số nhân nhỏ hơn — giúp chuỗi lot tăng chậm hơn ở giai đoạn giữa, giảm áp lực vốn khi sideway kéo dài.</span>
+              <span data-en>Smaller multiplier — lots grow more slowly in the middle phase, reducing capital pressure during extended sideways.</span>
+              <span class="stip tip-yellow">⚡ <span data-vi>Ví dụ: 0.09 → 0.12 → 0.15 → 0.20...</span><span data-en>Example: 0.09 → 0.12 → 0.15 → 0.20...</span></span>
             </div>
           </div>
           <div class="srow" style="background:rgba(246,70,93,0.05);border-left:3px solid var(--sell);">
-            <div class="scell-name"><span class="sparam" style="color:var(--sell);">⏯ Bắt đầu Level 3 từ lệnh thứ</span></div>
+            <div class="scell-name"><span class="sparam" style="color:var(--sell);" data-vi>⏯ Bắt đầu Level 3 từ lệnh thứ</span><span class="sparam" style="color:var(--sell);" data-en>⏯ Start Level 3 from order #</span></div>
             <div class="scell-def"><span class="sdef" style="color:var(--sell);">#6</span></div>
             <div class="scell-desc">
-              Từ lệnh thứ này trở đi, EA tăng tốc nhân lot để đẩy nhanh phục hồi vốn khi chu kỳ đã quá dài.
-              <span class="stip tip-red">⚠ Cần chuẩn bị vốn dự phòng trước LV3</span>
+              <span data-vi>Từ lệnh thứ này trở đi, EA tăng tốc nhân lot để đẩy nhanh phục hồi vốn khi chu kỳ đã quá dài.</span>
+              <span data-en>From this order onward, EA accelerates lot multiplication to speed up recovery when the cycle has run too long.</span>
+              <span class="stip tip-red">⚠ <span data-vi>Cần chuẩn bị vốn dự phòng trước LV3</span><span data-en>Prepare reserve capital before LV3</span></span>
             </div>
           </div>
           <div class="srow" style="background:rgba(246,70,93,0.05);border-left:3px solid var(--sell);">
-            <div class="scell-name"><span class="sparam" style="color:var(--sell);">Hệ số nhân lot — Level 3</span></div>
+            <div class="scell-name"><span class="sparam" style="color:var(--sell);" data-vi>Hệ số nhân lot — Level 3</span><span class="sparam" style="color:var(--sell);" data-en>Lot Multiplier — Level 3</span></div>
             <div class="scell-def"><span class="sdef" style="color:var(--sell);">×1.6</span></div>
             <div class="scell-desc">
-              Hệ số tăng trở lại — tạo lợi thế lot lớn khi giá cuối cùng breakout. Lot lớn hơn = phục hồi nhanh hơn, nhưng rủi ro cao hơn.
-              <span class="stip tip-red">⚠ Chỉ dùng khi có đủ vốn dự phòng</span>
+              <span data-vi>Hệ số tăng trở lại — tạo lợi thế lot lớn khi giá cuối cùng breakout. Lot lớn hơn = phục hồi nhanh hơn, nhưng rủi ro cao hơn.</span>
+              <span data-en>Multiplier increases again — builds lot advantage when price finally breaks out. Larger lots = faster recovery, but higher risk.</span>
+              <span class="stip tip-red">⚠ <span data-vi>Chỉ dùng khi có đủ vốn dự phòng</span><span data-en>Only use when sufficient reserve capital available</span></span>
             </div>
           </div>
         </div>
 
-        <!-- ══ TAB: KHUNG GIỜ ══ -->
+        <!-- TAB: TIME -->
         <div id="tab-gio" class="stab-panel" style="display:none;">
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Giờ bắt đầu giao dịch (GMT+7)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Giờ bắt đầu giao dịch (GMT+7)</span><span class="sparam" data-en>Trading Start Hour (GMT+7)</span></div>
             <div class="scell-def"><span class="sdef">00:00</span></div>
             <div class="scell-desc">
-              Giờ EA bắt đầu được phép nhận lệnh mới (theo giờ Việt Nam GMT+7). Ngoài khung giờ này, EA sẽ không mở lệnh mới nhưng vẫn quản lý lệnh đang mở.
-              <span class="stip tip-green">✓ Khuyến nghị bắt đầu từ 8:00 GMT+7</span>
+              <span data-vi>Giờ EA bắt đầu được phép nhận lệnh mới (theo giờ Việt Nam GMT+7). Ngoài khung giờ này, EA sẽ không mở lệnh mới nhưng vẫn quản lý lệnh đang mở.</span>
+              <span data-en>Hour EA is allowed to open new orders (Vietnam time GMT+7). Outside this window, EA won't open new orders but still manages open ones.</span>
+              <span class="stip tip-green">✓ <span data-vi>Khuyến nghị bắt đầu từ 8:00 GMT+7</span><span data-en>Recommended start from 8:00 GMT+7</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Giờ dừng nhận lệnh mới (GMT+7)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Giờ dừng nhận lệnh mới (GMT+7)</span><span class="sparam" data-en>Trading Stop Hour (GMT+7)</span></div>
             <div class="scell-def"><span class="sdef">23:59</span></div>
             <div class="scell-desc">
-              Giờ EA ngừng mở lệnh mới. Sau giờ này, các lệnh đang mở vẫn được quản lý bình thường, chỉ không vào thêm lệnh mới.
-              <span class="stip tip-yellow">⚡ Tránh khung 22h–2h GMT+7 (news Mỹ/EU)</span>
+              <span data-vi>Giờ EA ngừng mở lệnh mới. Sau giờ này, các lệnh đang mở vẫn được quản lý bình thường, chỉ không vào thêm lệnh mới.</span>
+              <span data-en>Hour EA stops opening new orders. After this time, open orders are still managed normally, just no new entries.</span>
+              <span class="stip tip-yellow">⚡ <span data-vi>Tránh khung 22h–2h GMT+7 (news Mỹ/EU)</span><span data-en>Avoid 22h–2h GMT+7 window (US/EU news)</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Timeframe giới hạn Hed</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Timeframe giới hạn Hed</span><span class="sparam" data-en>Hedge Limit Timeframe</span></div>
             <div class="scell-def"><span class="sdef">M1</span></div>
             <div class="scell-desc">
-              Timeframe dùng để đếm số lệnh hedge trong mỗi nến. Kết hợp với "Max lệnh Hedging/nến" để tránh vào quá nhiều lệnh trong 1 nến.
-              <span class="stip tip-blue">💡 M1 = kiểm tra mỗi phút, M5 = mỗi 5 phút</span>
+              <span data-vi>Timeframe dùng để đếm số lệnh hedge trong mỗi nến. Kết hợp với "Max lệnh Hedging/nến" để tránh vào quá nhiều lệnh trong 1 nến.</span>
+              <span data-en>Timeframe used to count hedge orders per candle. Combined with "Max Hedging Orders/candle" to avoid too many orders on one candle.</span>
+              <span class="stip tip-blue">💡 <span data-vi>M1 = kiểm tra mỗi phút, M5 = mỗi 5 phút</span><span data-en>M1 = check every minute, M5 = every 5 minutes</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Max lệnh Hedging/nến</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Max lệnh Hedging/nến</span><span class="sparam" data-en>Max Hedge Orders/Candle</span></div>
             <div class="scell-def"><span class="sdef">1</span></div>
             <div class="scell-desc">
-              Số lượng lệnh hedge tối đa được phép mở trong 1 nến của timeframe đã chọn. Giúp tránh EA vào liên tiếp nhiều lệnh khi giá biến động mạnh đột ngột.
-              <span class="stip tip-green">✓ Giữ = 1 để an toàn</span>
+              <span data-vi>Số lượng lệnh hedge tối đa được phép mở trong 1 nến của timeframe đã chọn. Giúp tránh EA vào liên tiếp nhiều lệnh khi giá biến động mạnh đột ngột.</span>
+              <span data-en>Maximum hedge orders allowed per candle on the selected timeframe. Prevents EA from entering multiple orders consecutively during sudden strong price movements.</span>
+              <span class="stip tip-green">✓ <span data-vi>Giữ = 1 để an toàn</span><span data-en>Keep = 1 for safety</span></span>
             </div>
           </div>
         </div>
 
-        <!-- ══ TAB: THOÁT LỆNH ══ -->
+        <!-- TAB: EXIT -->
         <div id="tab-thoat" class="stab-panel" style="display:none;">
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Kiểu thoát lệnh</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Kiểu thoát lệnh</span><span class="sparam" data-en>Exit Mode</span></div>
             <div class="scell-def"><span class="sdef">SL/TP RR</span></div>
             <div class="scell-desc">
-              <b style="color:var(--text1)">Trailing Stop:</b> EA dùng đường trailing bám theo giá, chốt lãi khi giá quay đầu cán trail.<br>
-              <b style="color:var(--text1)">SL/TP cố định theo RR:</b> EA đặt TP/SL theo tỷ lệ RR cố định dựa trên biên độ zone.
-              <span class="stip tip-blue">💡 Chế độ RR ổn định hơn cho trader mới</span>
+              <b style="color:var(--text1)" data-vi>Trailing Stop:</b><b style="color:var(--text1)" data-en>Trailing Stop:</b>
+              <span data-vi> EA dùng đường trailing bám theo giá, chốt lãi khi giá quay đầu cán trail.</span>
+              <span data-en> EA uses trailing line that follows price, taking profit when price reverses to hit the trail.</span><br>
+              <b style="color:var(--text1)" data-vi>SL/TP cố định theo RR:</b><b style="color:var(--text1)" data-en>Fixed SL/TP by RR:</b>
+              <span data-vi> EA đặt TP/SL theo tỷ lệ RR cố định dựa trên biên độ zone.</span>
+              <span data-en> EA sets TP/SL by fixed RR ratio based on zone width.</span>
+              <span class="stip tip-blue">💡 <span data-vi>Chế độ RR ổn định hơn cho trader mới</span><span data-en>RR mode is more stable for new traders</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Tỷ lệ RR (1R = biên độ vùng Hed)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Tỷ lệ RR (1R = biên độ zone)</span><span class="sparam" data-en>RR Ratio (1R = zone width)</span></div>
             <div class="scell-def"><span class="sdef">2</span></div>
             <div class="scell-desc">
-              Khi dùng chế độ SL/TP cố định, EA đặt TP = RR × biên độ zone kể từ điểm hoà vốn. RR = 2 nghĩa là lãi = 2× zone.
-              <span class="stip tip-green">✓ Zone 200pip + RR2 → TP cách BE 400pip</span>
+              <span data-vi>Khi dùng chế độ SL/TP cố định, EA đặt TP = RR × biên độ zone kể từ điểm hoà vốn. RR = 2 nghĩa là lãi = 2× zone.</span>
+              <span data-en>When using fixed SL/TP mode, EA sets TP = RR × zone width from break-even point. RR = 2 means profit = 2× zone.</span>
+              <span class="stip tip-green">✓ <span data-vi>Zone 200pip + RR2 → TP cách BE 400pip</span><span data-en>Zone 200pip + RR2 → TP 400pip from BE</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Chốt lãi toàn bộ ($)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Chốt lãi toàn bộ ($)</span><span class="sparam" data-en>Close All at Profit ($)</span></div>
             <div class="scell-def"><span class="sdef">$250</span></div>
             <div class="scell-desc">
-              Khi tổng floating P&L đạt mức này, EA tự động đóng tất cả lệnh và chốt lãi bất kể đang ở phase nào.
-              <span class="stip tip-yellow">⚡ $1000 vốn → target $100–200 là hợp lý</span>
+              <span data-vi>Khi tổng floating P&L đạt mức này, EA tự động đóng tất cả lệnh và chốt lãi bất kể đang ở phase nào.</span>
+              <span data-en>When total floating P&L reaches this level, EA automatically closes all orders and takes profit regardless of current phase.</span>
+              <span class="stip tip-yellow">⚡ <span data-vi>$1000 vốn → target $100–200 là hợp lý</span><span data-en>$1000 capital → target $100–200 is reasonable</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Cắt lỗ toàn bộ (-$)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Cắt lỗ toàn bộ (-$)</span><span class="sparam" data-en>Close All at Loss (-$)</span></div>
             <div class="scell-def"><span class="sdef">-1,000,000</span></div>
             <div class="scell-desc">
-              Ngưỡng thua lỗ khẩn cấp. Khi floating âm vượt qua mức này, EA đóng tất cả. Mặc định rất lớn = không giới hạn.
-              <span class="stip tip-red">⚠ $1000 vốn → nên cài -300 đến -500</span>
+              <span data-vi>Ngưỡng thua lỗ khẩn cấp. Khi floating âm vượt qua mức này, EA đóng tất cả. Mặc định rất lớn = không giới hạn.</span>
+              <span data-en>Emergency loss threshold. When floating goes below this level, EA closes all. Default is very large = effectively unlimited.</span>
+              <span class="stip tip-red">⚠ <span data-vi>$1000 vốn → nên cài -300 đến -500</span><span data-en>$1000 capital → set -300 to -500</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Số lệnh kích hoạt hòa vốn</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Số lệnh kích hoạt hòa vốn</span><span class="sparam" data-en>Orders to Trigger Break-Even</span></div>
             <div class="scell-def"><span class="sdef">9</span></div>
             <div class="scell-desc">
-              Khi số lệnh mở đạt ngưỡng này và P&L ≥ mức lãi tối thiểu (beProfit), EA sẽ đóng tất cả ở mức hoà vốn hoặc lãi nhỏ để thoát an toàn.
-              <span class="stip tip-blue">💡 Thoát sớm khi chuỗi lệnh quá dài</span>
+              <span data-vi>Khi số lệnh mở đạt ngưỡng này và P&L ≥ mức lãi tối thiểu (beProfit), EA sẽ đóng tất cả ở mức hoà vốn hoặc lãi nhỏ để thoát an toàn.</span>
+              <span data-en>When open orders reach this count and P&L ≥ minimum profit (beProfit), EA closes all at break-even or small profit for a safe exit.</span>
+              <span class="stip tip-blue">💡 <span data-vi>Thoát sớm khi chuỗi lệnh quá dài</span><span data-en>Early exit when order chain runs too long</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Lãi tối thiểu để hòa vốn ($)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Lãi tối thiểu để hòa vốn ($)</span><span class="sparam" data-en>Min Profit for Break-Even ($)</span></div>
             <div class="scell-def"><span class="sdef">$1</span></div>
             <div class="scell-desc">
-              Mức lãi tối thiểu cần đạt trước khi kích hoạt cắt hoà vốn. Tránh đóng lệnh khi P&L âm hoặc = 0.
-              <span class="stip tip-green">✓ Giữ ở $1–$5 là phù hợp</span>
+              <span data-vi>Mức lãi tối thiểu cần đạt trước khi kích hoạt cắt hoà vốn. Tránh đóng lệnh khi P&L âm hoặc = 0.</span>
+              <span data-en>Minimum profit required before triggering break-even close. Prevents closing orders when P&L is negative or zero.</span>
+              <span class="stip tip-green">✓ <span data-vi>Giữ ở $1–$5 là phù hợp</span><span data-en>Keep at $1–$5 is appropriate</span></span>
             </div>
           </div>
           <div class="srow" style="border-top:1px solid var(--border);background:rgba(167,139,250,0.04);">
-            <div class="scell-name"><span class="sparam" style="color:var(--trail);">Bước dịch Trailing (pip)</span></div>
+            <div class="scell-name"><span class="sparam" style="color:var(--trail);" data-vi>Bước dịch Trailing (pip)</span><span class="sparam" style="color:var(--trail);" data-en>Trailing Step (pip)</span></div>
             <div class="scell-def"><span class="sdef" style="color:var(--trail);">30</span></div>
             <div class="scell-desc">
-              <i style="color:var(--text4);font-size:11px;">[Chỉ dùng khi Kiểu thoát = Trailing Stop]</i><br>
-              Trailing chỉ cập nhật khi giá di chuyển thêm số pip này. Bước nhỏ = bảo vệ sát hơn, bước lớn = gồng lãi xa hơn.
-              <span class="stip" style="background:var(--trail-dim);color:var(--trail);border-color:rgba(167,139,250,0.3);">🛡 30 pip = khoảng $3 với 0.01 lot XAUUSD</span>
+              <i style="color:var(--text4);font-size:11px;" data-vi>[Chỉ dùng khi Kiểu thoát = Trailing Stop]</i>
+              <i style="color:var(--text4);font-size:11px;" data-en>[Only when Exit Mode = Trailing Stop]</i><br>
+              <span data-vi>Trailing chỉ cập nhật khi giá di chuyển thêm số pip này. Bước nhỏ = bảo vệ sát hơn, bước lớn = gồng lãi xa hơn.</span>
+              <span data-en>Trailing only updates when price moves this many pips. Smaller step = tighter protection, larger step = rides profit further.</span>
+              <span class="stip" style="background:var(--trail-dim);color:var(--trail);border-color:rgba(167,139,250,0.3);">🛡 <span data-vi>30 pip = khoảng $3 với 0.01 lot XAUUSD</span><span data-en>30 pip ≈ $3 with 0.01 lot XAUUSD</span></span>
             </div>
           </div>
           <div class="srow" style="background:rgba(167,139,250,0.04);">
-            <div class="scell-name"><span class="sparam" style="color:var(--trail);">Dùng Trailing ảo</span></div>
+            <div class="scell-name"><span class="sparam" style="color:var(--trail);" data-vi>Dùng Trailing ảo</span><span class="sparam" style="color:var(--trail);" data-en>Use Virtual Trailing</span></div>
             <div class="scell-def"><span class="sdef" style="color:var(--trail);">true</span></div>
             <div class="scell-desc">
-              <i style="color:var(--text4);font-size:11px;">[Chỉ dùng khi Kiểu thoát = Trailing Stop]</i><br>
-              Bật = EA vẽ đường trailing ảo tức thì trên chart (không đặt SL thật vào broker). Khi giá cán đường ảo → EA đóng tất cả bằng lệnh market.
-              <span class="stip" style="background:var(--trail-dim);color:var(--trail);border-color:rgba(167,139,250,0.3);">🛡 Tránh bị broker nhìn thấy SL, phản ứng nhanh hơn</span>
+              <i style="color:var(--text4);font-size:11px;" data-vi>[Chỉ dùng khi Kiểu thoát = Trailing Stop]</i>
+              <i style="color:var(--text4);font-size:11px;" data-en>[Only when Exit Mode = Trailing Stop]</i><br>
+              <span data-vi>Bật = EA vẽ đường trailing ảo tức thì trên chart (không đặt SL thật vào broker). Khi giá cán đường ảo → EA đóng tất cả bằng lệnh market.</span>
+              <span data-en>On = EA draws a virtual trailing line on chart (no real SL at broker). When price hits virtual line → EA closes all via market order.</span>
+              <span class="stip" style="background:var(--trail-dim);color:var(--trail);border-color:rgba(167,139,250,0.3);">🛡 <span data-vi>Tránh bị broker nhìn thấy SL, phản ứng nhanh hơn</span><span data-en>Hides SL from broker, reacts faster</span></span>
             </div>
           </div>
         </div>
 
-        <!-- ══ TAB: TỈA LỆNH ══ -->
+        <!-- TAB: TRIM -->
         <div id="tab-tia" class="stab-panel" style="display:none;">
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Tổng lệnh để kích hoạt tỉa</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Tổng lệnh để kích hoạt tỉa</span><span class="sparam" data-en>Orders to Activate Trim</span></div>
             <div class="scell-def"><span class="sdef">4</span></div>
             <div class="scell-desc">
-              Tính năng Tỉa Lệnh chỉ hoạt động khi tổng số lệnh đang mở ≥ con số này. Ngăn EA tỉa lệnh quá sớm khi vừa mới bắt đầu chu kỳ.
-              <span class="stip tip-blue">💡 Mặc định 4 — tức là cần ít nhất 4 lệnh mới tỉa</span>
+              <span data-vi>Tính năng Tỉa Lệnh chỉ hoạt động khi tổng số lệnh đang mở ≥ con số này. Ngăn EA tỉa lệnh quá sớm khi vừa mới bắt đầu chu kỳ.</span>
+              <span data-en>Trim feature only activates when total open orders ≥ this number. Prevents EA from trimming too early at the start of a cycle.</span>
+              <span class="stip tip-blue">💡 <span data-vi>Mặc định 4 — cần ít nhất 4 lệnh mới tỉa</span><span data-en>Default 4 — needs at least 4 orders before trimming</span></span>
             </div>
           </div>
           <div class="srow">
-            <div class="scell-name"><span class="sparam">Lãi tối thiểu tỉa 2 lệnh cuối ($)</span></div>
+            <div class="scell-name"><span class="sparam" data-vi>Lãi tối thiểu tỉa 2 lệnh cuối ($)</span><span class="sparam" data-en>Min Profit to Trim 2 Last Orders ($)</span></div>
             <div class="scell-def"><span class="sdef">$10</span></div>
             <div class="scell-desc">
-              EA tự động đóng 2 lệnh mở gần nhất khi tổng lãi của 2 lệnh đó ≥ mức này. Giúp giảm lot đang giữ và chốt lãi một phần mà không cần đóng toàn bộ.
-              <span class="stip tip-green">✓ Giảm rủi ro, giải phóng margin ngay lập tức</span>
+              <span data-vi>EA tự động đóng 2 lệnh mở gần nhất khi tổng lãi của 2 lệnh đó ≥ mức này. Giúp giảm lot đang giữ và chốt lãi một phần mà không cần đóng toàn bộ.</span>
+              <span data-en>EA automatically closes the 2 most recent open orders when their combined profit ≥ this level. Reduces held lot size and locks partial profit without closing everything.</span>
+              <span class="stip tip-green">✓ <span data-vi>Giảm rủi ro, giải phóng margin ngay lập tức</span><span data-en>Reduces risk, frees margin immediately</span></span>
             </div>
           </div>
           <div class="srow" style="background:rgba(14,203,129,0.04);">
             <div class="scell-name" colspan="3" style="padding:12px 18px;">
-              <div style="font-family:var(--mono);font-size:10px;color:var(--text4);margin-bottom:8px;">CÁC NÚT ĐIỀU KHIỂN TRỰC TIẾP TRÊN CHART</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--text4);margin-bottom:8px;" data-vi>CÁC NÚT ĐIỀU KHIỂN TRỰC TIẾP TRÊN CHART</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--text4);margin-bottom:8px;" data-en>DIRECT CHART CONTROL BUTTONS</div>
               <div style="display:flex;flex-wrap:wrap;gap:8px;">
-                <span style="font-family:var(--mono);font-size:11px;background:rgba(14,203,129,0.12);border:1px solid rgba(14,203,129,0.3);color:var(--buy);padding:4px 12px;border-radius:4px;">▲ Buy — Bắt đầu Buy thủ công</span>
-                <span style="font-family:var(--mono);font-size:11px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);color:var(--sell);padding:4px 12px;border-radius:4px;">▼ Sell — Bắt đầu Sell thủ công</span>
-                <span style="font-family:var(--mono);font-size:11px;background:rgba(240,185,11,0.1);border:1px solid var(--border2);color:var(--gold);padding:4px 12px;border-radius:4px;">✔ Auto — Bật/tắt tự động</span>
-                <span style="font-family:var(--mono);font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:4px;">Pause — Tạm dừng lệnh mới</span>
-                <span style="font-family:var(--mono);font-size:11px;background:rgba(100,140,180,0.12);border:1px solid rgba(100,140,180,0.3);color:#6496c8;padding:4px 12px;border-radius:4px;">Tỉa Lệnh — Tỉa thủ công ngay</span>
-                <span style="font-family:var(--mono);font-size:11px;background:rgba(196,128,0,0.12);border:1px solid rgba(196,128,0,0.3);color:#c48000;padding:4px 12px;border-radius:4px;">Close All — Đóng toàn bộ</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(14,203,129,0.12);border:1px solid rgba(14,203,129,0.3);color:var(--buy);padding:4px 12px;border-radius:4px;">▲ Buy</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);color:var(--sell);padding:4px 12px;border-radius:4px;">▼ Sell</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(240,185,11,0.1);border:1px solid var(--border2);color:var(--gold);padding:4px 12px;border-radius:4px;">✔ Auto</span>
+                <span style="font-family:var(--mono);font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:4px;">Pause</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(100,140,180,0.12);border:1px solid rgba(100,140,180,0.3);color:#6496c8;padding:4px 12px;border-radius:4px;" data-vi>Tỉa Lệnh</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(100,140,180,0.12);border:1px solid rgba(100,140,180,0.3);color:#6496c8;padding:4px 12px;border-radius:4px;" data-en>Trim Orders</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(196,128,0,0.12);border:1px solid rgba(196,128,0,0.3);color:#c48000;padding:4px 12px;border-radius:4px;">Close All</span>
               </div>
             </div>
           </div>
         </div>
 
-      </div><!-- end panels wrapper -->
-    </div><!-- end settingsUI -->
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- FEATURES -->
 <section id="features">
   <div class="container">
-    <div class="section-label reveal">TÍNH NĂNG</div>
+    <div class="section-label reveal">
+      <span data-vi>TÍNH NĂNG</span><span data-en>FEATURES</span>
+    </div>
     <h2 class="reveal">Full-Featured <span class="accent">Engine</span></h2>
-    <p class="section-desc reveal">Thiết kế riêng cho XAUUSD — biên độ lớn, cần chiến lược hedge chính xác.</p>
+    <p class="section-desc reveal">
+      <span data-vi>Thiết kế riêng cho XAUUSD — biên độ lớn, cần chiến lược hedge chính xác.</span>
+      <span data-en>Built specifically for XAUUSD — high volatility demands a precise hedging strategy.</span>
+    </p>
     <div class="feat-grid reveal">
-      <div class="feat-card"><div class="feat-icon">📊</div><div class="feat-title">Auto Sideway Detection</div><p class="feat-desc">Tự nhận diện Sideway qua 16+ điểm tham chiếu. Breakout → vào lệnh tức thì đúng hướng giá.</p></div>
-      <div class="feat-card"><div class="feat-icon">📈</div><div class="feat-title">3 Level Lot Scaling</div><p class="feat-desc"><span style="color:#5394ff">LV1 ×2.0</span> (1–3) · <span style="color:var(--gold)">LV2 ×1.3</span> (4–8) · <span style="color:var(--sell)">LV3 ×1.6</span> (9+). Tối đa 12 lot/lệnh, 16 lệnh.</p></div>
-      <div class="feat-card"><div class="feat-icon">🛡️</div><div class="feat-title">TrailingStop 2 Lớp</div><p class="feat-desc">Đường ảo tức thì + trailing thực bước 30 pips. Gồng lãi tối đa khi XAUUSD break mạnh.</p></div>
-      <div class="feat-card"><div class="feat-icon">✂️</div><div class="feat-title">Tỉa Lệnh (Trim)</div><p class="feat-desc">Đóng 2 lệnh mới nhất khi đạt profit $10. Giảm rủi ro tức thì không cần đóng toàn bộ.</p></div>
-      <div class="feat-card"><div class="feat-icon">🕐</div><div class="feat-title">Giờ Giao Dịch GMT+7</div><p class="feat-desc">Cài khung giờ theo GMT+7. Auto ngưng ngoài giờ — tránh biến động news XAUUSD mạnh.</p></div>
-      <div class="feat-card"><div class="feat-icon">🖥️</div><div class="feat-title">Binance Dark Panel</div><p class="feat-desc">Canvas real-time kéo thả: equity, P&L Buy/Sell, Hedging Zone, floating & daily profit.</p></div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Auto Sideway Detection</div>
+        <p class="feat-desc" data-vi>Tự nhận diện Sideway qua 16+ điểm tham chiếu. Breakout → vào lệnh tức thì đúng hướng giá.</p>
+        <p class="feat-desc" data-en>Auto-detects Sideway via 16+ reference points. Breakout → instant entry in price direction.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <div class="feat-title">3 Level Lot Scaling</div>
+        <p class="feat-desc" data-vi><span style="color:#5394ff">LV1 ×2.0</span> (1–3) · <span style="color:var(--gold)">LV2 ×1.3</span> (4–8) · <span style="color:var(--sell)">LV3 ×1.6</span> (9+). Tối đa 12 lot/lệnh, 16 lệnh.</p>
+        <p class="feat-desc" data-en><span style="color:#5394ff">LV1 ×2.0</span> (1–3) · <span style="color:var(--gold)">LV2 ×1.3</span> (4–8) · <span style="color:var(--sell)">LV3 ×1.6</span> (9+). Max 12 lot/order, 16 orders.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-title" data-vi>TrailingStop 2 Lớp</div>
+        <div class="feat-title" data-en>2-Layer TrailingStop</div>
+        <p class="feat-desc" data-vi>Đường ảo tức thì + trailing thực bước 30 pips. Gồng lãi tối đa khi XAUUSD break mạnh.</p>
+        <p class="feat-desc" data-en>Instant virtual line + real trailing at 30 pip step. Maximizes profit when XAUUSD breaks strongly.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">✂️</div>
+        <div class="feat-title" data-vi>Tỉa Lệnh (Trim)</div>
+        <div class="feat-title" data-en>Order Trim</div>
+        <p class="feat-desc" data-vi>Đóng 2 lệnh mới nhất khi đạt profit $10. Giảm rủi ro tức thì không cần đóng toàn bộ.</p>
+        <p class="feat-desc" data-en>Close the 2 newest orders when profit reaches $10. Reduces risk immediately without closing everything.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🕐</div>
+        <div class="feat-title" data-vi>Giờ Giao Dịch GMT+7</div>
+        <div class="feat-title" data-en>Trading Hours GMT+7</div>
+        <p class="feat-desc" data-vi>Cài khung giờ theo GMT+7. Auto ngưng ngoài giờ — tránh biến động news XAUUSD mạnh.</p>
+        <p class="feat-desc" data-en>Set hours by GMT+7. Auto-pause outside hours — avoids strong XAUUSD news volatility.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🖥️</div>
+        <div class="feat-title">Binance Dark Panel</div>
+        <p class="feat-desc" data-vi>Canvas real-time kéo thả: equity, P&L Buy/Sell, Hedging Zone, floating & daily profit.</p>
+        <p class="feat-desc" data-en>Draggable real-time canvas: equity, Buy/Sell P&L, Hedging Zone, floating & daily profit.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- LOT CALCULATOR — Vấn đề 5: Floating đúng theo nguyên tắc hedging -->
+<!-- LOT CALCULATOR -->
 <section id="lot">
   <div class="container">
-    <div class="section-label reveal">BẢNG LOT</div>
+    <div class="section-label reveal">
+      <span data-vi>BẢNG LOT</span><span data-en>LOT TABLE</span>
+    </div>
     <h2 class="reveal">Lot Scaling <span class="accent">Calculator</span></h2>
-    <p class="section-desc reveal">Tính floating tại thời điểm mở từng lệnh: các lệnh cùng side đang ở breakeven, lệnh ngược side đang lỗ 1 zone. Nhập cấu hình và nhấn Tính Toán.</p>
+    <p class="section-desc reveal">
+      <span data-vi>Tính floating tại thời điểm mở từng lệnh: các lệnh cùng side đang ở breakeven, lệnh ngược side đang lỗ 1 zone. Nhập cấu hình và nhấn Tính Toán.</span>
+      <span data-en>Calculates floating at each order open: same-side orders are at break-even, opposite-side orders are down 1 zone. Enter config and click Calculate.</span>
+    </p>
     <div class="lot-layout reveal">
       <div class="calc-panel">
-        <div class="calc-hdr">⚙ CẤU HÌNH LOT — XAUUSD</div>
+        <div class="calc-hdr" data-vi>⚙ CẤU HÌNH LOT — XAUUSD</div>
+        <div class="calc-hdr" data-en>⚙ LOT CONFIG — XAUUSD</div>
         <div class="calc-body">
           <div class="inp-row">
-            <label class="inp-lbl">LOT BẮT ĐẦU</label>
+            <label class="inp-lbl" data-vi>LOT BẮT ĐẦU</label>
+            <label class="inp-lbl" data-en>STARTING LOT</label>
             <input class="inp-f" id="c_lot0" type="number" value="0.01" min="0.01" step="0.01">
           </div>
           <div class="inp-row">
-            <label class="inp-lbl">HEDGING ZONE (pips XAUUSD)</label>
+            <label class="inp-lbl" data-vi>HEDGING ZONE (pips XAUUSD)</label>
+            <label class="inp-lbl" data-en>HEDGING ZONE (pips XAUUSD)</label>
             <input class="inp-f" id="c_zone" type="number" value="200" min="50" step="50">
           </div>
           <div class="inp-row">
-            <label class="inp-lbl">GIÁ TRỊ 1 PIP (USD/lot)</label>
+            <label class="inp-lbl" data-vi>GIÁ TRỊ 1 PIP (USD/lot)</label>
+            <label class="inp-lbl" data-en>PIP VALUE (USD/lot)</label>
             <input class="inp-f" id="c_pipval" type="number" value="1" min="0.1" step="0.1">
           </div>
           <div class="note-box">
-            XAUUSD: 1 lot = $10/pip (tiêu chuẩn) · 0.01 lot = $0.10/pip<br>
-            Broker khác nhau có thể khác — kiểm tra ContractSize.
+            XAUUSD: 1 lot = $10/pip · 0.01 lot = $0.10/pip<br>
+            <span data-vi>Broker khác nhau có thể khác — kiểm tra ContractSize.</span>
+            <span data-en>May vary by broker — check ContractSize.</span>
           </div>
           <div class="inp-row">
-            <label class="inp-lbl">LV1 HỆ SỐ × (lệnh 1 → LV2-1)</label>
+            <label class="inp-lbl" data-vi>LV1 HỆ SỐ × (lệnh 1 → LV2-1)</label>
+            <label class="inp-lbl" data-en>LV1 MULTIPLIER × (order 1 → LV2-1)</label>
             <input class="inp-f" id="c_m1" type="number" value="2.0" min="1" step="0.1">
           </div>
           <div class="inp-g2">
             <div class="inp-row" style="margin-bottom:0">
-              <label class="inp-lbl">LV2 BẮT ĐẦU #</label>
+              <label class="inp-lbl" data-vi>LV2 BẮT ĐẦU #</label>
+              <label class="inp-lbl" data-en>LV2 START #</label>
               <input class="inp-f" id="c_lv2s" type="number" value="4" min="2" step="1">
             </div>
             <div class="inp-row" style="margin-bottom:0">
-              <label class="inp-lbl">LV2 HỆ SỐ ×</label>
+              <label class="inp-lbl" data-vi>LV2 HỆ SỐ ×</label>
+              <label class="inp-lbl" data-en>LV2 MULTIPLIER ×</label>
               <input class="inp-f" id="c_m2" type="number" value="1.3" min="1" step="0.1">
             </div>
           </div>
           <div style="height:9px;"></div>
           <div class="inp-g2">
             <div class="inp-row" style="margin-bottom:0">
-              <label class="inp-lbl">LV3 BẮT ĐẦU #</label>
+              <label class="inp-lbl" data-vi>LV3 BẮT ĐẦU #</label>
+              <label class="inp-lbl" data-en>LV3 START #</label>
               <input class="inp-f" id="c_lv3s" type="number" value="9" min="3" step="1">
             </div>
             <div class="inp-row" style="margin-bottom:0">
-              <label class="inp-lbl">LV3 HỆ SỐ ×</label>
+              <label class="inp-lbl" data-vi>LV3 HỆ SỐ ×</label>
+              <label class="inp-lbl" data-en>LV3 MULTIPLIER ×</label>
               <input class="inp-f" id="c_m3" type="number" value="1.6" min="1" step="0.1">
             </div>
           </div>
           <div style="height:12px;"></div>
-          <button class="calc-btn" onclick="calcLot()">▶ TÍNH TOÁN</button>
+          <button class="calc-btn" onclick="calcLot()" data-vi>▶ TÍNH TOÁN</button>
+          <button class="calc-btn" onclick="calcLot()" data-en>▶ CALCULATE</button>
         </div>
       </div>
       <div class="table-wrap">
         <table class="lot-tbl">
           <thead>
             <tr>
-              <th>#LỆNH</th><th>LEVEL</th><th>LOẠI</th><th>LOT LỆNH</th><th>FLOATING (tại thời điểm mở)</th>
+              <th data-vi>#LỆNH</th><th data-en>#ORDER</th>
+              <th>LEVEL</th>
+              <th data-vi>LOẠI</th><th data-en>TYPE</th>
+              <th data-vi>LOT LỆNH</th><th data-en>ORDER LOT</th>
+              <th data-vi>FLOATING (tại thời điểm mở)</th><th data-en>FLOATING (at open moment)</th>
             </tr>
           </thead>
           <tbody id="lotTbody"></tbody>
@@ -967,41 +1413,56 @@ footer span{color:var(--gold);}
 <!-- CTA -->
 <section id="cta">
   <div class="container">
-    <div class="section-label reveal" style="justify-content:center;padding-left:18px;">LIÊN HỆ & DỊCH VỤ</div>
-    <h2 class="reveal" style="text-align:center;">Liên Hệ <span class="accent">TCode</span></h2>
+    <div class="section-label reveal" style="justify-content:center;padding-left:18px;">
+      <span data-vi>LIÊN HỆ & DỊCH VỤ</span><span data-en>CONTACT & SERVICES</span>
+    </div>
+    <h2 class="reveal" style="text-align:center;">
+      <span data-vi>Liên Hệ <span class="accent">TCode</span></span>
+      <span data-en>Contact <span class="accent">TCode</span></span>
+    </h2>
     <p class="section-desc reveal" style="margin:0 auto 32px;text-align:center;max-width:600px;">
-      Nhận EA, tư vấn chiến thuật và hỗ trợ kỹ thuật vận hành bot XAUUSD trực tiếp.
+      <span data-vi>Nhận EA, tư vấn chiến thuật và hỗ trợ kỹ thuật vận hành bot XAUUSD trực tiếp.</span>
+      <span data-en>Get the EA, strategy consulting, and technical support for operating XAUUSD bots directly.</span>
     </p>
 
     <div class="reveal" style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:22px 28px;max-width:700px;margin:0 auto 28px;">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1.5px;margin-bottom:14px;">DỊCH VỤ</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1.5px;margin-bottom:14px;" data-vi>DỊCH VỤ</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1.5px;margin-bottom:14px;" data-en>SERVICES</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
           <div>
-            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Code Bot/Tool MT4, MT5</div>
-            <div style="font-size:12px;color:var(--text3);">Nhận code theo yêu cầu — EA, indicator, script tùy chỉnh</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-vi>Code Bot/Tool MT4, MT5</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-en>Bot/Tool Coding MT4, MT5</div>
+            <div style="font-size:12px;color:var(--text3);" data-vi>Nhận code theo yêu cầu — EA, indicator, script tùy chỉnh</div>
+            <div style="font-size:12px;color:var(--text3);" data-en>Custom coding on demand — EA, indicator, script</div>
           </div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
           <div>
-            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Tư Vấn Chiến Thuật</div>
-            <div style="font-size:12px;color:var(--text3);">Thiết kế & tối ưu chiến lược hedging, grid, martingale</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-vi>Tư Vấn Chiến Thuật</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-en>Strategy Consulting</div>
+            <div style="font-size:12px;color:var(--text3);" data-vi>Thiết kế & tối ưu chiến lược hedging, grid, martingale</div>
+            <div style="font-size:12px;color:var(--text3);" data-en>Design & optimize hedging, grid, martingale strategies</div>
           </div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
           <div>
-            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Hỗ Trợ Vận Hành Bot</div>
-            <div style="font-size:12px;color:var(--text3);">Cài đặt, cấu hình, debug EA trên VPS và MetaTrader</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-vi>Hỗ Trợ Vận Hành Bot</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-en>Bot Operation Support</div>
+            <div style="font-size:12px;color:var(--text3);" data-vi>Cài đặt, cấu hình, debug EA trên VPS và MetaTrader</div>
+            <div style="font-size:12px;color:var(--text3);" data-en>Setup, configuration, debug EA on VPS and MetaTrader</div>
           </div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
           <div>
-            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Nhóm Trading Cộng Đồng</div>
-            <div style="font-size:12px;color:var(--text3);">Chia sẻ tín hiệu, chiến lược XAUUSD theo từng phiên</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-vi>Nhóm Trading Cộng Đồng</div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;" data-en>Trading Community Group</div>
+            <div style="font-size:12px;color:var(--text3);" data-vi>Chia sẻ tín hiệu, chiến lược XAUUSD theo từng phiên</div>
+            <div style="font-size:12px;color:var(--text3);" data-en>Share signals, XAUUSD strategies per session</div>
           </div>
         </div>
       </div>
@@ -1028,19 +1489,23 @@ footer span{color:var(--gold);}
     <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:700px;margin:0 auto 28px;">
       <a href="https://t.me/TCode_TradingHeBot" target="_blank" class="cta-card" style="border-color:rgba(14,203,129,0.25);">
         <span class="cta-icon">🤖</span>
-        <div class="cta-lbl" style="color:var(--buy);">Nhóm Trading Hệ Bot</div>
+        <div class="cta-lbl" style="color:var(--buy);" data-vi>Nhóm Trading Hệ Bot</div>
+        <div class="cta-lbl" style="color:var(--buy);" data-en>Trading Bot Group</div>
         <div class="cta-val">t.me/TCode_TradingHeBot</div>
       </a>
       <a href="https://t.me/+3iZn3jSexOMzMzc1" target="_blank" class="cta-card" style="border-color:rgba(167,139,250,0.25);">
         <span class="cta-icon">📊</span>
-        <div class="cta-lbl" style="color:var(--trail);">Nhóm Chuyên Hedging</div>
-        <div class="cta-val">Tham gia nhóm riêng</div>
+        <div class="cta-lbl" style="color:var(--trail);" data-vi>Nhóm Chuyên Hedging</div>
+        <div class="cta-lbl" style="color:var(--trail);" data-en>Hedging Specialists Group</div>
+        <div class="cta-val" data-vi>Tham gia nhóm riêng</div>
+        <div class="cta-val" data-en>Join private group</div>
       </a>
     </div>
 
     <div class="disclaimer reveal">
-      <span class="warn">⚠</span> Giao dịch XAUUSD có rủi ro rất cao. Hãy hiểu rõ chiến lược Hedging trước khi dùng vốn thật.<br>
-      EA chỉ là công cụ hỗ trợ — quản lý vốn và rủi ro là trách nhiệm của trader.
+      <span class="warn">⚠</span>
+      <span data-vi> Giao dịch XAUUSD có rủi ro rất cao. Hãy hiểu rõ chiến lược Hedging trước khi dùng vốn thật.<br>EA chỉ là công cụ hỗ trợ — quản lý vốn và rủi ro là trách nhiệm của trader.</span>
+      <span data-en> XAUUSD trading carries very high risk. Understand the Hedging strategy thoroughly before using real capital.<br>EA is only a tool — capital and risk management are the trader's responsibility.</span>
     </div>
   </div>
 </section>
@@ -1049,10 +1514,17 @@ footer span{color:var(--gold);}
   <span>TCode</span> Hedging Master EA · XAUUSD MT5 · v2.6 &nbsp;·&nbsp; t.me/TCode_TradingHeBot
 </footer>
 
-<!-- ════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════ -->
 <script>
+/* ══ LANGUAGE SWITCHER ══ */
+function setLang(lang) {
+  document.body.className = 'lang-' + lang;
+  document.documentElement.lang = lang;
+  document.getElementById('btnVI').classList.toggle('active', lang === 'vi');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+  // Re-run lot calc to update any language-sensitive labels
+  calcLot();
+}
+
 /* ══ SCROLL REVEAL ══ */
 const ro = new IntersectionObserver(es => {
   es.forEach(e => {
@@ -1065,7 +1537,6 @@ const ro = new IntersectionObserver(es => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 
-
 /* ══ SETTINGS TABS ══ */
 function switchTab(tabId) {
   document.querySelectorAll('.stab-panel').forEach(p => p.style.display = 'none');
@@ -1073,8 +1544,7 @@ function switchTab(tabId) {
   document.getElementById('tab-' + tabId).style.display = 'block';
   document.querySelector('.stab[data-tab="' + tabId + '"]').classList.add('active');
 }
-</script>
-<script>
+
 /* ══ LOT CALCULATOR ══ */
 function calcLot() {
   const lot0   = parseFloat(document.getElementById('c_lot0').value)  || 0.01;
@@ -1086,10 +1556,11 @@ function calcLot() {
   const lv3s   = parseInt(document.getElementById('c_lv3s').value)    || 9;
   const m3     = parseFloat(document.getElementById('c_m3').value)    || 1.6;
 
+  const isEN = document.body.classList.contains('lang-en');
+
   const tbody = document.getElementById('lotTbody');
   tbody.innerHTML = '';
 
-  // Build lot sequence
   const lots = [];
   let lot = lot0;
   for (let i = 1; i <= 16; i++) {
@@ -1099,30 +1570,21 @@ function calcLot() {
     lot = +Math.min(+(lot * mul).toFixed(2), 12).toFixed(2);
   }
 
-  // Assign order types: alternating Buy/Sell starting with Buy
-  // Odd orders (1,3,5...) = Buy, Even orders (2,4,6...) = Sell
-  // (Based on hedging logic: first order is Buy, then alternate)
   const orderTypes = lots.map((_, i) => (i % 2 === 0) ? 'buy' : 'sell');
 
-  // Compute floating at each order's opening moment
-  let cumLot = 0;
   for (let i = 0; i < 16; i++) {
     const orderNum   = i + 1;
     const thisLot    = lots[i];
     const thisType   = orderTypes[i];
     const oppositeType = thisType === 'buy' ? 'sell' : 'buy';
 
-    // Sum of lots for all PREVIOUS orders that are opposite to this order
     let oppositeLotSum = 0;
     for (let j = 0; j < i; j++) {
-      if (orderTypes[j] === oppositeType) {
-        oppositeLotSum += lots[j];
-      }
+      if (orderTypes[j] === oppositeType) oppositeLotSum += lots[j];
     }
     oppositeLotSum = +oppositeLotSum.toFixed(4);
 
     const floating = -(zone * oppositeLotSum * pipval);
-    cumLot = +(cumLot + thisLot).toFixed(2);
 
     let badge;
     if (orderNum < lv2s)       badge = `<span class="lv-badge lv1">LV1</span>`;
