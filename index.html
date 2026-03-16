@@ -2,223 +2,1156 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Hedging EA – State Loss Calculator</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCode Hedging Master EA — XAUUSD MT5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:#0b1220;
-    color:#e5e7eb;
-    margin:0;
+/* ══ VARIABLES ══ */
+:root {
+  --bg0:#0a0c10;--bg1:#0e1116;--bg2:#141820;--bg3:#1e2328;--bg4:#2b2f36;
+  --gold:#f0b90b;--gold2:#ffd632;--gold-dim:rgba(240,185,11,0.13);
+  --buy:#0ecb81;--buy-dim:rgba(14,203,129,0.11);
+  --sell:#f6465d;--sell-dim:rgba(246,70,93,0.11);
+  --trail:#a78bfa;--trail-dim:rgba(167,139,250,0.12);
+  --text1:#eaecef;--text2:#b7bdc6;--text3:#848e9c;--text4:#474d57;
+  --border:#2b2f36;--border2:rgba(240,185,11,0.22);
+  --mono:'Space Mono',monospace;--body:'Sora',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg0);color:var(--text1);font-family:var(--body);font-size:15px;line-height:1.6;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg0);}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,12,16,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:6px;}
+.nav-logo span{color:var(--text4);font-weight:400;font-size:11px;}
+.nav-links{display:flex;gap:2px;list-style:none;}
+.nav-links a{color:var(--text4);text-decoration:none;font-size:11px;font-family:var(--mono);padding:5px 10px;border-radius:4px;transition:all .2s;}
+.nav-links a:hover{color:var(--gold);background:var(--gold-dim);}
+@media(max-width:640px){.nav-links{display:none;}}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* SECTION */
+section{position:relative;padding:88px 24px;z-index:1;}
+.container{max-width:1100px;margin:0 auto;}
+.section-label{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.section-label::before{content:'';display:inline-block;width:16px;height:1px;background:var(--gold);}
+h2{font-family:var(--mono);font-size:clamp(20px,3.8vw,32px);font-weight:700;color:var(--text1);line-height:1.15;margin-bottom:12px;}
+h2 .accent{color:var(--gold);}
+.section-desc{color:var(--text3);font-size:13px;max-width:520px;margin-bottom:40px;}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:#000;font-family:var(--mono);font-size:12px;font-weight:700;padding:10px 20px;border-radius:6px;text-decoration:none;border:none;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--gold2);box-shadow:0 6px 18px rgba(240,185,11,.26);}
+.btn-outline{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--text2);font-family:var(--mono);font-size:12px;padding:10px 20px;border-radius:6px;text-decoration:none;border:1px solid var(--border);transition:all .2s;cursor:pointer;}
+.btn-outline:hover{color:var(--gold);border-color:var(--border2);background:var(--gold-dim);}
+
+/* ═══ HERO ═══ */
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:56px;overflow:hidden;}
+#hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(240,185,11,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(240,185,11,.03) 1px,transparent 1px);background-size:54px 54px;z-index:0;}
+.hero-content{position:relative;z-index:2;max-width:760px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--border2);padding:5px 13px;border-radius:100px;font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:26px;opacity:0;animation:fadeUp .6s ease .1s forwards;}
+.hero-badge .dot{width:5px;height:5px;background:var(--buy);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.7);}}
+.hero-title{font-family:var(--mono);font-size:clamp(32px,7vw,68px);font-weight:700;line-height:1.0;letter-spacing:-2px;margin-bottom:6px;opacity:0;animation:fadeUp .7s ease .2s forwards;}
+.hero-title .t{color:var(--gold);}
+.hero-title .rest{color:var(--text2);font-weight:400;font-size:.56em;display:block;letter-spacing:-1px;margin-top:4px;}
+.hero-tagline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:24px;opacity:0;animation:fadeUp .7s ease .3s forwards;}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;font-size:10px;font-family:var(--mono);color:var(--text2);}
+.tag.buy{border-color:rgba(14,203,129,.3);color:var(--buy);}
+.tag.sell{border-color:rgba(246,70,93,.3);color:var(--sell);}
+.tag.gold{border-color:var(--border2);color:var(--gold);}
+.hero-desc{font-size:14px;color:var(--text2);line-height:1.75;max-width:580px;margin-bottom:32px;opacity:0;animation:fadeUp .7s ease .4s forwards;}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease .5s forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+/* ═══ HOW ═══ */
+#how{background:var(--bg1);}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+@media(max-width:768px){.steps-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:440px){.steps-grid{grid-template-columns:1fr;}}
+.step-card{background:var(--bg2);padding:24px 20px;transition:background .2s;}
+.step-card:hover{background:var(--bg3);}
+.step-num{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.step-num::after{content:'';flex:1;height:1px;background:var(--border);}
+.step-icon{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px;}
+.si-y{background:var(--gold-dim);}
+.si-g{background:var(--buy-dim);}
+.si-r{background:var(--sell-dim);}
+.step-title{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:6px;}
+.step-desc{font-size:12px;color:var(--text3);line-height:1.6;}
+
+/* ═══ VIDEO DEMO ═══ */
+#videodemo{background:var(--bg0);}
+
+/* ═══ ZONE / Cơ Chế Hoạt Động ═══ */
+#zone{background:var(--bg1);}
+.zone-rules-full{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:768px){.zone-rules-full{grid-template-columns:1fr;}}
+.rule-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 16px;display:flex;align-items:flex-start;gap:11px;transition:transform .2s;}
+.rule-card:hover{transform:translateX(3px);}
+.rule-card.top{border-left:3px solid var(--buy);}
+.rule-card.bot{border-left:3px solid var(--sell);}
+.rule-card.hed{border-left:3px solid var(--gold);}
+.rule-card.trail{border-left:3px solid var(--trail);}
+.rule-card.entry{border-left:3px solid #5394ff;}
+.rule-card.cycle{border-left:3px solid #f97316;}
+.rule-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.rd-g{background:var(--buy);box-shadow:0 0 6px var(--buy);}
+.rd-r{background:var(--sell);box-shadow:0 0 6px var(--sell);}
+.rd-y{background:var(--gold);box-shadow:0 0 6px var(--gold);}
+.rd-p{background:var(--trail);box-shadow:0 0 6px var(--trail);}
+.rd-b{background:#5394ff;box-shadow:0 0 6px #5394ff;}
+.rd-o{background:#f97316;box-shadow:0 0 6px #f97316;}
+.rule-title{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:3px;}
+.rule-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+
+/* ═══ SETTINGS SECTION ═══ */
+#settings{background:var(--bg0);}
+
+/* Tab buttons */
+.stab{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:9px 16px;border:1px solid var(--border);border-bottom:none;
+  border-radius:8px 8px 0 0;background:var(--bg2);color:var(--text4);
+  cursor:pointer;transition:all .15s;position:relative;top:1px;
+}
+.stab:hover{color:var(--text2);background:var(--bg3);}
+.stab.active{background:var(--bg2);color:var(--gold);border-color:var(--border);border-bottom-color:var(--bg2);z-index:2;}
+
+/* Table rows */
+.srow{
+  display:grid;grid-template-columns:2fr 1fr 3fr;
+  border-bottom:1px solid rgba(43,47,54,.5);
+  transition:background .15s;
+}
+.srow:last-child{border-bottom:none;}
+.srow:hover{background:rgba(255,255,255,0.025);}
+
+.scell-name{padding:13px 18px;display:flex;align-items:flex-start;}
+.scell-def {padding:13px 18px;display:flex;align-items:flex-start;}
+.scell-desc{padding:13px 18px;font-size:12px;color:var(--text3);line-height:1.6;}
+
+.sparam{font-family:var(--mono);font-size:11px;color:var(--gold);font-weight:700;line-height:1.5;}
+.sdef  {font-family:var(--mono);font-size:13px;color:var(--buy);font-weight:700;}
+
+/* Tip badges */
+.stip{
+  display:inline-block;margin-top:6px;font-family:var(--mono);font-size:10px;
+  padding:3px 10px;border-radius:4px;border-width:1px;border-style:solid;
+}
+.tip-green{color:var(--buy);background:var(--buy-dim);border-color:rgba(14,203,129,.25);}
+.tip-yellow{color:var(--gold);background:var(--gold-dim);border-color:var(--border2);}
+.tip-red{color:var(--sell);background:var(--sell-dim);border-color:rgba(246,70,93,.25);}
+.tip-blue{color:#5394ff;background:rgba(83,148,255,.1);border-color:rgba(83,148,255,.25);}
+
+@media(max-width:640px){
+  .srow{grid-template-columns:1fr;}
+  .scell-def{padding-top:0;}
 }
 
-.container{
-    max-width:920px;
-    margin:30px auto;
-    background:#111a2e;
-    padding:22px;
-    border-radius:12px;
-    box-shadow:0 0 30px rgba(0,0,0,0.4);
-}
+/* ═══ FEATURES ═══ */
+#features{background:var(--bg1);}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+@media(max-width:768px){.feat-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:440px){.feat-grid{grid-template-columns:1fr;}}
+.feat-card{background:var(--bg1);padding:24px 20px;transition:background .2s;}
+.feat-card:hover{background:var(--bg2);}
+.feat-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:12px;background:var(--bg3);}
+.feat-title{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.feat-desc{font-size:12px;color:var(--text3);line-height:1.6;}
 
-h2{
-    margin-top:0;
-    color:#38bdf8;
-}
+/* ═══ LOT CALC ═══ */
+#lot{background:var(--bg1);}
+.lot-layout{display:grid;grid-template-columns:320px 1fr;gap:32px;align-items:start;}
+@media(max-width:860px){.lot-layout{grid-template-columns:1fr;}}
+.calc-panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.calc-hdr{padding:11px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;}
+.calc-body{padding:16px;}
+.inp-row{margin-bottom:11px;}
+.inp-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.5px;margin-bottom:4px;display:block;}
+.inp-f{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:7px 11px;color:var(--text1);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s;}
+.inp-f:focus{border-color:var(--border2);}
+.inp-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.note-box{font-family:var(--mono);font-size:9px;color:var(--text4);padding:9px 11px;background:var(--bg3);border-radius:5px;line-height:1.7;margin-bottom:12px;}
+.calc-btn{width:100%;padding:10px;background:var(--gold);color:#000;font-family:var(--mono);font-size:11px;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:all .15s;}
+.calc-btn:hover{background:var(--gold2);}
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto;}
+.lot-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;min-width:460px;}
+.lot-tbl th{background:var(--bg3);color:var(--text3);font-size:10px;font-weight:400;letter-spacing:.4px;padding:10px 13px;text-align:left;border-bottom:1px solid var(--border);}
+.lot-tbl td{padding:9px 13px;border-bottom:1px solid rgba(43,47,54,.4);}
+.lot-tbl tr:last-child td{border-bottom:none;}
+.lot-tbl tr:hover td{background:var(--bg3);}
+.lv-badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.4px;}
+.lv1{background:rgba(83,148,255,.13);color:#5394ff;border:1px solid rgba(83,148,255,.26);}
+.lv2{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border2);}
+.lv3{background:var(--sell-dim);color:var(--sell);border:1px solid rgba(246,70,93,.26);}
+.f-pos{color:var(--buy);font-weight:700;}
+.f-neg{color:var(--sell);font-weight:700;}
 
-label{
-    font-size:14px;
-    opacity:0.9;
-}
+/* ═══ CTA ═══ */
+#cta{background:var(--bg0);text-align:center;}
+.cta-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-decoration:none;display:block;transition:all .2s;}
+.cta-card:hover{transform:translateY(-3px);border-color:var(--border2);background:var(--bg3);box-shadow:0 12px 32px rgba(0,0,0,.4);}
+.cta-icon{font-size:26px;margin-bottom:9px;display:block;}
+.cta-lbl{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold);margin-bottom:4px;}
+.cta-val{font-size:12px;color:var(--text2);font-family:var(--mono);}
+.disclaimer{font-size:11px;color:var(--text4);font-family:var(--mono);padding:16px;border-top:1px solid var(--border);max-width:520px;margin:0 auto;}
+.warn{color:var(--sell);}
 
-input,select,button{
-    width:100%;
-    padding:10px;
-    margin:6px 0 14px;
-    border-radius:6px;
-    border:none;
-    outline:none;
-    font-size:14px;
-}
-
-input,select{
-    background:#020617;
-    color:#fff;
-    border:1px solid #1e293b;
-}
-
-button{
-    background:#0ea5e9;
-    color:#000;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
-}
-button:hover{
-    background:#38bdf8;
-}
-
-table{
-    width:100%;
-    margin-top:22px;
-    border-collapse:collapse;
-    font-size:14px;
-}
-
-th,td{
-    padding:10px;
-    border-bottom:1px solid #334155;
-    text-align:center;
-}
-
-th{
-    color:#7dd3fc;
-    font-weight:600;
-}
-
-.buy{color:#22c55e;font-weight:bold;}
-.sell{color:#ef4444;font-weight:bold;}
-.loss{color:#f87171;font-weight:bold;}
-
-/* ===== AUTHOR BOX ===== */
-.author{
-    margin-top:28px;
-    padding:18px;
-    background:linear-gradient(135deg,#020617,#0f172a);
-    border-radius:10px;
-    border:1px solid #1e293b;
-}
-
-.author h3{
-    margin:0 0 8px;
-    color:#38bdf8;
-    font-size:18px;
-}
-
-.author p{
-    margin:4px 0;
-    font-size:14px;
-    line-height:1.6;
-}
-
-.author a{
-    color:#7dd3fc;
-    text-decoration:none;
-}
-.author a:hover{
-    text-decoration:underline;
-}
-
-.footer{
-    text-align:center;
-    margin-top:12px;
-    font-size:12px;
-    opacity:0.6;
-}
+footer{background:var(--bg1);border-top:1px solid var(--border);padding:20px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text4);}
+footer span{color:var(--gold);}
 </style>
 </head>
-
 <body>
 
-<div class="container">
-<h2>📊 Hedging EA – State Loss Calculator</h2>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">T<span>CODE</span><span>/ XAUUSD Hedging EA</span></div>
+  <ul class="nav-links">
+    <li><a href="#how">#how</a></li>
+    <li><a href="#videodemo">#demo</a></li>
+    <li><a href="#zone">#zone</a></li>
+    <li><a href="#settings">#settings</a></li>
+    <li><a href="#features">#feat</a></li>
+    <li><a href="#lot">#lot</a></li>
+    <li><a href="#cta">#contact</a></li>
+  </ul>
+</nav>
 
-<label>Lệnh bắt đầu</label>
-<select id="start">
-    <option value="BUY">Buy</option>
-    <option value="SELL">Sell</option>
-</select>
+<!-- HERO -->
+<section id="hero">
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="hero-content">
+      <div class="hero-badge"><div class="dot"></div>XAUUSD · MT5 · EA v2.6 · HEDGING RECOVERY</div>
+      <h1 class="hero-title">
+        <span class="t">T</span>CODE
+        <span class="rest">Hedging Master EA</span>
+      </h1>
+      <div class="hero-tagline">
+        <span class="tag gold">XAUUSD Gold</span>
+        <span class="tag buy">▲ Auto Buy</span>
+        <span class="tag sell">▼ Auto Sell</span>
+        <span class="tag">Sideway Detection</span>
+        <span class="tag">Recovery Zone</span>
+      </div>
+      <p class="hero-desc">
+        Bot chuyên <strong style="color:var(--text1)"> đánh break</strong> — tự động nhận diện vùng Sideway,
+        vào lệnh khi Breakout, và dùng chiến lược
+        <strong style="color:var(--gold)">Hedging Recovery</strong> với lot tăng dần
+        để phục hồi vốn khi thị trường đảo chiều.
+        TrailingStop giúp gồng lãi khi giá break mạnh.
+      </p>
+      <div class="hero-actions">
+        <a href="https://t.me/TCode_TradingHeBot" target="_blank" class="btn-primary">✈️ Nhóm Trading Hệ Bot</a>
+        <a href="https://t.me/+3iZn3jSexOMzMzc1" target="_blank" class="btn-outline">📊 Nhóm Chuyên Hedging →</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-<label>Lot ban đầu (L0)</label>
-<input id="lot0" value="0.01">
+<!-- HOW -->
+<section id="how">
+  <div class="container">
+    <div class="section-label reveal">CƠ CHẾ HOẠT ĐỘNG</div>
+    <h2 class="reveal">4 Bước <span class="accent">Tự Động Hóa</span></h2>
+    <p class="section-desc reveal">Từ nhận diện thị trường → vào lệnh → hedge → thoát. Bot xử lý hoàn toàn tự động trên XAUUSD.</p>
+    <div class="steps-grid reveal">
+      <div class="step-card">
+        <div class="step-num">STEP 01</div>
+        <div class="step-icon si-y">🔍</div>
+        <div class="step-title">Xác Nhận Sideway</div>
+        <p class="step-desc">Bot theo dõi 16+ điểm giá. Biên độ &lt; 400 pips XAUUSD → xác nhận Sideway và vẽ Hedging Zone.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">STEP 02</div>
+        <div class="step-icon si-g">📐</div>
+        <div class="step-title">Vẽ Hedging Zone</div>
+        <p class="step-desc">Hình chữ nhật xuất hiện. <span style="color:var(--buy)">Phá cạnh trên → BUY</span>, <span style="color:var(--sell)">phá cạnh dưới → SELL</span>. Trader cũng tự vẽ hoặc vào lệnh thủ công.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">STEP 03</div>
+        <div class="step-icon si-r">⚡</div>
+        <div class="step-title">Kích Hoạt Hedge</div>
+        <p class="step-desc">Giá đảo chiều chạm cạnh đối diện → hedge lệnh ngược với lot × hệ số Level. HedLine vàng báo ngưỡng kế tiếp.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">STEP 04</div>
+        <div class="step-icon si-y">🎯</div>
+        <div class="step-title">TP & Trailing</div>
+        <p class="step-desc">Đạt Target $250 → đóng tất cả. Break mạnh → TrailingStop 2 lớp gồng lãi tối đa trước khi chốt.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<label>Hệ số nhân lot (k)</label>
-<input id="k" value="2">
+<!-- SƠ ĐỒ MÔ PHỎNG — Recovery Zone System (static infographic) -->
+<section id="videodemo" style="background:var(--bg0);padding:80px 24px;">
+  <div class="container">
+    <div class="section-label reveal">SƠ ĐỒ MÔ PHỎNG</div>
+    <h2 class="reveal">Chu Kỳ <span class="accent">Hedging Thực Tế</span></h2>
+    <p class="section-desc reveal">Giá dao động trong Recovery Zone → lệnh Buy/Sell xen kẽ, lot nhân đôi mỗi lần → khi giá break mạnh ra ngoài, bên lot lớn hơn thắng, đóng tất cả chốt lãi.</p>
 
-<label>Hedging Zone (point)</label>
-<input id="zone" value="100">
+    <!-- Main infographic SVG -->
+    <div class="reveal" style="max-width:920px;margin:0 auto 32px;">
+      <svg viewBox="0 0 920 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;border-radius:14px;overflow:hidden;" font-family="'Space Mono',monospace">
+        <!-- Background -->
+        <rect width="920" height="440" fill="#0e1116"/>
+        <!-- Grid lines subtle -->
+        <g stroke="rgba(255,255,255,0.025)" stroke-width="1">
+          <line x1="0" y1="55"  x2="920" y2="55"/>
+          <line x1="0" y1="110" x2="920" y2="110"/>
+          <line x1="0" y1="165" x2="920" y2="165"/>
+          <line x1="0" y1="220" x2="920" y2="220"/>
+          <line x1="0" y1="275" x2="920" y2="275"/>
+          <line x1="0" y1="330" x2="920" y2="330"/>
+          <line x1="0" y1="385" x2="920" y2="385"/>
+        </g>
 
-<label>Giá trị 1 point / 1 lot ($)</label>
-<input id="value" value="1">
+        <!-- ══ TAKE PROFIT TOP LINE ══ -->
+        <line x1="40" y1="72" x2="880" y2="72" stroke="#f0b90b" stroke-width="2.5" stroke-dasharray="0"/>
+        <rect x="760" y="55" width="120" height="22" rx="4" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
+        <text x="820" y="70" fill="#f0b90b" font-size="11" font-weight="700" text-anchor="middle">TAKE PROFIT ↑</text>
 
-<label>Số lệnh hed (N)</label>
-<input id="n" value="3">
+        <!-- ══ TAKE PROFIT BOTTOM LINE ══ -->
+        <line x1="40" y1="368" x2="880" y2="368" stroke="#f0b90b" stroke-width="2.5"/>
+        <rect x="760" y="351" width="120" height="22" rx="4" fill="rgba(240,185,11,0.15)" stroke="rgba(240,185,11,0.4)" stroke-width="1"/>
+        <text x="820" y="366" fill="#f0b90b" font-size="11" font-weight="700" text-anchor="middle">TAKE PROFIT ↓</text>
 
-<button onclick="calc()">TÍNH TOÁN</button>
+        <!-- ══ RECOVERY ZONE FILL ══ -->
+        <rect x="40" y="158" width="840" height="124" fill="rgba(240,185,11,0.04)" rx="0"/>
 
-<table>
-<thead>
-<tr>
-<th>STT</th>
-<th>Loại lệnh</th>
-<th>Lot</th>
-<th>Lỗ trạng thái ($)</th>
-<th>Giá ↑↓ để BE (point)</th>
-</tr>
-</thead>
-<tbody id="result"></tbody>
-</table>
+        <!-- BUY LINE (top of zone) -->
+        <line x1="40" y1="158" x2="880" y2="158" stroke="#0ecb81" stroke-width="2" stroke-dasharray="0"/>
+        <!-- SELL LINE (bottom of zone) -->
+        <line x1="40" y1="282" x2="880" y2="282" stroke="#f6465d" stroke-width="2" stroke-dasharray="0"/>
 
-<!-- ===== AUTHOR INFO ===== -->
-<div class="author">
-    <p>🚀 Nhận code Bot <b>MT4 / MT5</b>, Theo yêu cầu</p>
-    <p>📱 <b>Zalo:</b> 0964.822.327</p>
-    <p>📧 <b>Email:</b> tcodefx.auto@gmail.com</p>
-    <p>💬 <b>Telegram:</b> <a href="https://t.me/tCode_T95" target="_blank">t.me/tCode_T95</a></p>
-</div>
+        <!-- Zone label left -->
+        <text x="18" y="202" fill="#0ecb81" font-size="10" text-anchor="middle" transform="rotate(-90,18,202)">BUY LINE</text>
+        <text x="18" y="310" fill="#f6465d" font-size="10" text-anchor="middle" transform="rotate(-90,18,310)">SELL LINE</text>
 
-<div class="footer">
-© 2026 – Hedging EA Tools by TCode
-</div>
+        <!-- Recovery Zone brace -->
+        <line x1="895" y1="158" x2="895" y2="282" stroke="rgba(240,185,11,0.5)" stroke-width="1.5"/>
+        <line x1="890" y1="158" x2="895" y2="158" stroke="rgba(240,185,11,0.5)" stroke-width="1.5"/>
+        <line x1="890" y1="282" x2="895" y2="282" stroke="rgba(240,185,11,0.5)" stroke-width="1.5"/>
+        <rect x="856" y="196" width="36" height="28" rx="4" fill="rgba(240,185,11,0.1)"/>
+        <text x="874" y="206" fill="#f0b90b" font-size="8" text-anchor="middle" font-weight="700">RECOV</text>
+        <text x="874" y="218" fill="#f0b90b" font-size="8" text-anchor="middle" font-weight="700">ZONE</text>
 
-</div>
+        <!-- ══ ZIGZAG PATH ══ -->
+        <!-- Dashed diagonal connectors (background) -->
+        <g stroke="rgba(255,255,255,0.12)" stroke-width="1.2" stroke-dasharray="5,4" fill="none">
+          <!-- 1→2 -->  <line x1="148" y1="158" x2="250" y2="282"/>
+          <!-- 2→3 -->  <line x1="250" y1="282" x2="352" y2="158"/>
+          <!-- 3→4 -->  <line x1="352" y1="158" x2="454" y2="282"/>
+          <!-- 4→5 -->  <line x1="454" y1="282" x2="556" y2="158"/>
+          <!-- 5→6 -->  <line x1="556" y1="158" x2="658" y2="282"/>
+          <!-- 6→7 -->  <line x1="658" y1="282" x2="760" y2="158"/>
+          <!-- 7→8 -->  <line x1="760" y1="158" x2="760" y2="282"/>
+        </g>
 
+        <!-- Horizontal price path lines -->
+        <!-- Buy line segment -->
+        <line x1="90"  y1="158" x2="760" y2="158" stroke="rgba(14,203,129,0.25)" stroke-width="1" stroke-dasharray="0"/>
+        <!-- Sell line segment -->
+        <line x1="90"  y1="282" x2="760" y2="282" stroke="rgba(246,70,93,0.25)" stroke-width="1" stroke-dasharray="0"/>
+
+        <!-- ══ BREAK UP ARROW (from node 7 up to TP) ══ -->
+        <defs>
+          <marker id="arrowUp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,8 L4,0 L8,8" fill="none" stroke="#0ecb81" stroke-width="1.5"/>
+          </marker>
+          <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,0 L4,8 L8,0" fill="none" stroke="#f6465d" stroke-width="1.5"/>
+          </marker>
+          <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,8 L4,0 L8,8" fill="none" stroke="#f0b90b" stroke-width="1.5"/>
+          </marker>
+          <filter id="glow-green">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glow-red">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Break UP arrow from node 7 to TP top -->
+        <line x1="760" y1="150" x2="760" y2="82" stroke="#0ecb81" stroke-width="2" marker-end="url(#arrowUp)"/>
+        <!-- Trailing stop label -->
+        <rect x="666" y="88" width="80" height="20" rx="4" fill="rgba(167,139,250,0.15)" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+        <text x="706" y="101" fill="#a78bfa" font-size="9" text-anchor="middle" font-weight="700">🛡 TRAILING SL</text>
+
+        <!-- ══ NODES — BUY (top line, green) ══ -->
+        <!-- Node 1 -->
+        <circle cx="148" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
+        <circle cx="148" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="148" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">1</text>
+        <!-- Node 3 -->
+        <circle cx="352" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
+        <circle cx="352" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="352" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">3</text>
+        <!-- Node 5 -->
+        <circle cx="556" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
+        <circle cx="556" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="556" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">5</text>
+        <!-- Node 7 -->
+        <circle cx="760" cy="158" r="20" fill="#0ecb81" filter="url(#glow-green)" opacity="0.95"/>
+        <circle cx="760" cy="158" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="760" y="163" fill="#0a0c10" font-size="13" font-weight="700" text-anchor="middle">7</text>
+
+        <!-- ══ NODES — SELL (bottom line, red) ══ -->
+        <!-- Node 2 -->
+        <circle cx="250" cy="282" r="20" fill="#f6465d" filter="url(#glow-red)" opacity="0.95"/>
+        <circle cx="250" cy="282" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="250" y="287" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">2</text>
+        <!-- Node 4 -->
+        <circle cx="454" cy="282" r="20" fill="#f6465d" filter="url(#glow-red)" opacity="0.95"/>
+        <circle cx="454" cy="282" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="454" y="287" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">4</text>
+        <!-- Node 6 -->
+        <circle cx="658" cy="282" r="20" fill="#f6465d" filter="url(#glow-red)" opacity="0.95"/>
+        <circle cx="658" cy="282" r="20" fill="none" stroke="#0a0c10" stroke-width="2"/>
+        <text x="658" y="287" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">6</text>
+        <!-- Node 8 (greyed — potential) -->
+        <circle cx="760" cy="282" r="18" fill="rgba(246,70,93,0.25)" stroke="#f6465d" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="760" y="287" fill="#f6465d" font-size="11" font-weight="700" text-anchor="middle">8?</text>
+
+        <!-- ══ LOT LABELS — BUY side ══ -->
+        <!-- 1→ 0.01 lot, arrow down shows direction to sell zone -->
+        <text x="108" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.01 lot</text>
+        <text x="310" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.04 lot</text>
+        <text x="514" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.16 lot</text>
+        <text x="718" y="148" fill="#0ecb81" font-size="10" font-weight="700" text-anchor="middle">0.64 lot</text>
+
+        <!-- ══ LOT LABELS — SELL side ══ -->
+        <text x="270" y="310" fill="#f6465d" font-size="10" font-weight="700" text-anchor="middle">0.02 lot</text>
+        <text x="474" y="310" fill="#f6465d" font-size="10" font-weight="700" text-anchor="middle">0.08 lot</text>
+        <text x="678" y="310" fill="#f6465d" font-size="10" font-weight="700" text-anchor="middle">0.32 lot</text>
+        <text x="793" y="310" fill="rgba(246,70,93,0.5)" font-size="10" text-anchor="middle">1.28 lot?</text>
+
+        <!-- ══ FLOATING P&L LABELS ══ -->
+        <!-- At node 2: floating = -$2 -->
+        <rect x="200" y="295" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
+        <text x="226" y="308" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$2.00</text>
+        <!-- At node 3: floating = -$4 -->
+        <rect x="326" y="130" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
+        <text x="352" y="143" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$4.00</text>
+        <!-- At node 4: floating = -$10 -->
+        <rect x="428" y="295" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
+        <text x="454" y="308" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$10.00</text>
+        <!-- At node 5: floating = -$20 -->
+        <rect x="530" y="130" width="52" height="18" rx="3" fill="rgba(246,70,93,0.15)" stroke="rgba(246,70,93,0.3)" stroke-width="1"/>
+        <text x="556" y="143" fill="#f6465d" font-size="9" text-anchor="middle" font-weight="700">-$20.00</text>
+
+        <!-- ══ "First trade" and "Hedge trade" labels LEFT ══ -->
+        <text x="55" y="163" fill="#0ecb81" font-size="10" font-weight="700">▲ BUY</text>
+        <text x="55" y="177" fill="rgba(14,203,129,0.6)" font-size="9">First trade</text>
+        <text x="55" y="287" fill="#f6465d" font-size="10" font-weight="700">▼ SELL</text>
+        <text x="55" y="301" fill="rgba(246,70,93,0.6)" font-size="9">Hedge trade</text>
+
+        <!-- Zone size label -->
+        <text x="480" y="226" fill="rgba(240,185,11,0.5)" font-size="10" text-anchor="middle">← HEDGING ZONE 200 pips →</text>
+
+        <!-- ══ BREAK OUT label ══ -->
+        <rect x="680" y="100" width="72" height="40" rx="6" fill="rgba(14,203,129,0.12)" stroke="rgba(14,203,129,0.35)" stroke-width="1"/>
+        <text x="716" y="116" fill="#0ecb81" font-size="9" font-weight="700" text-anchor="middle">🚀 BREAK</text>
+        <text x="716" y="130" fill="#0ecb81" font-size="9" text-anchor="middle">→ CHỐT LÃI</text>
+
+        <!-- ══ Title ══ -->
+        <text x="460" y="35" fill="#eaecef" font-size="15" font-weight="700" text-anchor="middle">RECOVERY ZONE SYSTEM  —  XAUUSD Hedging Cycle</text>
+        <line x1="200" y1="42" x2="720" y2="42" stroke="rgba(240,185,11,0.3)" stroke-width="1"/>
+
+        <!-- ══ Legend bottom ══ -->
+        <circle cx="60"  cy="415" r="6" fill="#0ecb81"/>
+        <text x="72" y="420" fill="#848e9c" font-size="10">BUY — giá mở tại cạnh trên zone</text>
+        <circle cx="280" cy="415" r="6" fill="#f6465d"/>
+        <text x="292" y="420" fill="#848e9c" font-size="10">SELL — giá mở tại cạnh dưới zone</text>
+        <rect x="500" y="409" width="10" height="10" rx="2" fill="rgba(240,185,11,0.4)" stroke="#f0b90b" stroke-width="1"/>
+        <text x="516" y="420" fill="#848e9c" font-size="10">Take Profit — khi break mạnh khỏi zone</text>
+        <rect x="740" y="409" width="10" height="10" rx="2" fill="rgba(167,139,250,0.4)" stroke="#a78bfa" stroke-width="1"/>
+        <text x="756" y="420" fill="#848e9c" font-size="10">Trailing Stop</text>
+      </svg>
+    </div>
+
+    <!-- Floating P&L table breakdown -->
+    <div class="reveal" style="max-width:920px;margin:0 auto;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:10px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1px;">BẢNG FLOATING TẠI THỜI ĐIỂM MỞ LỆNH</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--text4);">Zone=200pip · PipVal=$1/lot · Hệ số ×2</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;min-width:600px;">
+            <thead>
+              <tr style="background:var(--bg3);">
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">#</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">LỆNH</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">GIÁ MỞ</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">LOT</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">LỆNH ĐANG LỖ</th>
+                <th style="padding:9px 14px;text-align:left;color:var(--text3);font-size:10px;font-weight:400;border-bottom:1px solid var(--border);">FLOATING</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text3)">1</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--buy);font-weight:700;">▲ BUY</span></td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--buy)">5050</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.01</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">—</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text3)">$0.00</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text3)">2</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">▼ SELL</span></td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--sell)">5048</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.02</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">B0.01 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$2.00</span></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text3)">3</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--buy);font-weight:700;">▲ BUY</span></td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--buy)">5050</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.04</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">S0.02 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$4.00</span></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text3)">4</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">▼ SELL</span></td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--sell)">5048</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.08</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">B0.01+B0.04 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$10.00</span></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text3)">5</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--buy);font-weight:700;">▲ BUY</span></td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--buy)">5050</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text1);font-weight:700">0.16</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);color:var(--text4);font-size:11px;">S0.02+S0.08 lỗ 200pip</td>
+                <td style="padding:8px 14px;border-bottom:1px solid rgba(43,47,54,.4);"><span style="color:var(--sell);font-weight:700;">-$20.00</span></td>
+              </tr>
+              <tr style="background:rgba(14,203,129,0.05);">
+                <td style="padding:8px 14px;color:var(--text3)" colspan="3">
+                  <span style="font-family:var(--mono);font-size:10px;color:var(--text4);">→ Giá break mạnh lên trên 5050...</span>
+                </td>
+                <td style="padding:8px 14px;" colspan="3">
+                  <span style="font-family:var(--mono);font-size:11px;color:var(--buy);font-weight:700;">✅ P&L chuyển dương → TrailingStop kéo lên → CHỐT LÃI</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZONE — Vấn đề 2: Đổi thành "Cơ Chế Hoạt Động", xóa animation canvas -->
+<section id="zone">
+  <div class="container">
+    <div class="section-label reveal">CẤU TRÚC ZONE</div>
+    <h2 class="reveal">Hedging Zone <span class="accent">— Cơ Chế Hoạt Động</span></h2>
+    <p class="section-desc reveal">Vùng hình chữ nhật là quy chiếu cốt lõi. Giá sideway → hedge xen kẽ buy/sell với lot tăng dần. Break hẳn một hướng → toàn bộ vị thế vào lãi.</p>
+    <div class="zone-rules-full reveal">
+      <div class="rule-card entry">
+        <div class="rule-dot rd-b"></div>
+        <div>
+          <div class="rule-title">Vào Lệnh Đầu — Breakout Buy/Sell</div>
+          <p class="rule-desc">Khi giá phá cạnh trên Zone → EA vào <span style="color:var(--buy)">BUY</span> lot cơ bản (0.01). Phá cạnh dưới → vào <span style="color:var(--sell)">SELL</span>. Đây là điểm bắt đầu chu kỳ hedging.</p>
+        </div>
+      </div>
+      <div class="rule-card top">
+        <div class="rule-dot rd-g"></div>
+        <div>
+          <div class="rule-title">Cạnh TRÊN — Ngưỡng Kích Hoạt Buy</div>
+          <p class="rule-desc">Khi đang giữ lệnh Sell mà giá tăng chạm cạnh trên → EA tự động thêm lệnh <span style="color:var(--buy)">BUY</span> với lot × hệ số Level. Các lệnh Buy đều có cùng giá mở = cạnh trên.</p>
+        </div>
+      </div>
+      <div class="rule-card bot">
+        <div class="rule-dot rd-r"></div>
+        <div>
+          <div class="rule-title">Cạnh DƯỚI — Ngưỡng Kích Hoạt Sell</div>
+          <p class="rule-desc">Khi đang giữ lệnh Buy mà giá giảm chạm cạnh dưới → EA thêm lệnh <span style="color:var(--sell)">SELL</span> với lot × hệ số. Các lệnh Sell đều có cùng giá mở = cạnh dưới.</p>
+        </div>
+      </div>
+      <div class="rule-card hed">
+        <div class="rule-dot rd-y"></div>
+        <div>
+          <div class="rule-title">Nguyên Tắc Hedging — Buy/Sell Xen Kẽ</div>
+          <p class="rule-desc">Giá sideway: Buy@top → Sell@bot → Buy@top → Sell@bot... Lot tăng dần theo hệ số. <span style="color:var(--gold)">Mức lỗ floating = chiều rộng Zone × lot lệnh ngược chiều</span> đang âm.</p>
+        </div>
+      </div>
+      <div class="rule-card cycle">
+        <div class="rule-dot rd-o"></div>
+        <div>
+          <div class="rule-title">Break Hướng — Chốt Lãi Toàn Bộ</div>
+          <p class="rule-desc">Khi giá break mạnh khỏi Zone, side lot lớn hơn sẽ gồng lãi vượt qua lỗ tích lũy. Đạt target hoặc TrailingStop kích hoạt → <span style="color:var(--buy)">đóng tất cả, chốt lãi</span>.</p>
+        </div>
+      </div>
+      <div class="rule-card trail">
+        <div class="rule-dot rd-p"></div>
+        <div>
+          <div class="rule-title">TrailingStop — Gồng Lãi Khi Break Mạnh</div>
+          <p class="rule-desc">Khi P&L dương, đường <span style="color:var(--trail)">trailing tím</span> bám theo giá break. Giá quay đầu cán đường trail → đóng tất cả, chốt lãi tối đa, không để tuột lợi nhuận.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SETTINGS — Tab-table UI từ code EA thật -->
+<section id="settings" style="background:var(--bg0);">
+  <div class="container">
+    <div class="section-label reveal">CÀI ĐẶT EA</div>
+    <h2 class="reveal">Thông Số <span class="accent">Cài Đặt</span></h2>
+    <p class="section-desc reveal">Tên hiển thị trong MT5 — dễ hiểu cho trader mới. Nhấn từng nhóm để xem chi tiết.</p>
+
+    <div class="reveal" id="settingsUI">
+      <!-- TAB BAR -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0;border-bottom:1px solid var(--border);">
+        <button class="stab active" data-tab="chung"    onclick="switchTab('chung')">⚙️ Cơ Bản</button>
+        <button class="stab"        data-tab="lot"      onclick="switchTab('lot')">📊 Quản Lý Lot</button>
+        <button class="stab"        data-tab="gio"      onclick="switchTab('gio')">🕐 Khung Giờ</button>
+        <button class="stab"        data-tab="thoat"    onclick="switchTab('thoat')">🎯 Thoát Lệnh</button>
+        <button class="stab"        data-tab="tia"      onclick="switchTab('tia')">✂️ Tỉa Lệnh</button>
+      </div>
+
+      <!-- TAB PANELS -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;overflow:hidden;">
+
+        <!-- Header row -->
+        <div style="display:grid;grid-template-columns:2fr 1fr 3fr;background:var(--bg3);border-bottom:2px solid var(--border);">
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;">TÊN TRONG MT5</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;">MẶC ĐỊNH</div>
+          <div style="padding:9px 18px;font-family:var(--mono);font-size:9px;color:var(--text4);letter-spacing:1.5px;">GIẢI THÍCH</div>
+        </div>
+
+        <!-- ══ TAB: CƠ BẢN ══ -->
+        <div id="tab-chung" class="stab-panel">
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Magic Number (ID bot)</span></div>
+            <div class="scell-def"><span class="sdef">0</span></div>
+            <div class="scell-desc">
+              Con số định danh duy nhất cho EA. Khi chạy nhiều EA cùng lúc trên 1 tài khoản, mỗi EA phải có Magic Number khác nhau để không bị lẫn lệnh.
+              <span class="stip tip-blue">💡 Ví dụ: 1001, 1002, 2024...</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Lot khởi điểm</span></div>
+            <div class="scell-def"><span class="sdef">0.01</span></div>
+            <div class="scell-desc">
+              Lot của lệnh đầu tiên khi bắt đầu chu kỳ hedging. Đây là cơ sở tính toán cho toàn bộ chuỗi lệnh tiếp theo.
+              <span class="stip tip-green">✓ $500 vốn → 0.01 · $2000 vốn → 0.03–0.05</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Biên độ vùng Hed (pip)</span></div>
+            <div class="scell-def"><span class="sdef">400</span></div>
+            <div class="scell-desc">
+              Chiều rộng Hedging Zone — khoảng cách giữa cạnh trên (buy) và cạnh dưới (sell). Zone càng rộng thì ít bị hedge hơn, nhưng mỗi lần hedge thì lỗ lớn hơn.
+              <span class="stip tip-yellow">⚡ XAUUSD: 200–400 pip phổ biến nhất</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Số lệnh tối đa</span></div>
+            <div class="scell-def"><span class="sdef">16</span></div>
+            <div class="scell-desc">
+              Giới hạn số lệnh tối đa trong một chu kỳ hedging. EA sẽ dừng mở lệnh mới khi đạt ngưỡng này, bảo vệ tài khoản khỏi sideway kéo dài bất thường.
+              <span class="stip tip-red">⚠ Lệnh càng nhiều thì vốn yêu cầu càng lớn</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Lot tối đa / lệnh</span></div>
+            <div class="scell-def"><span class="sdef">12</span></div>
+            <div class="scell-desc">
+              Giới hạn trên cho mỗi lệnh đơn. Dù hệ số nhân tính ra lớn hơn, EA sẽ không bao giờ vào lệnh vượt quá mức này.
+              <span class="stip tip-blue">💡 Giúp kiểm soát rủi ro khi vào Level 3</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Kiểu vào lệnh</span></div>
+            <div class="scell-def"><span class="sdef">Lọc sideway</span></div>
+            <div class="scell-desc">
+              <b style="color:var(--text1)">Vào lệnh ngay:</b> EA vào lệnh ngay khi nhận tín hiệu, không cần xác nhận sideway.<br>
+              <b style="color:var(--text1)">Lọc sideway rồi vào:</b> EA theo dõi 16+ điểm giá, xác nhận vùng tích lũy rồi mới vào lệnh khi giá breakout — an toàn hơn.
+              <span class="stip tip-green">✓ Mặc định dùng chế độ lọc sideway</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ TAB: QUẢN LÝ LOT ══ -->
+        <div id="tab-lot" class="stab-panel" style="display:none;">
+          <div class="srow" style="background:rgba(83,148,255,0.05);border-left:3px solid #5394ff;">
+            <div class="scell-name"><span class="sparam" style="color:#5394ff;">Hệ số nhân lot — Level 1</span></div>
+            <div class="scell-def"><span class="sdef" style="color:#5394ff;">×3</span></div>
+            <div class="scell-desc">
+              Hệ số nhân lot cho các lệnh đầu tiên (từ lệnh #1 đến trước lệnh bắt đầu LV2). Thường để ×2 hoặc ×3.
+              <span class="stip tip-blue">💡 0.01 → 0.03 → 0.09 → ... (với ×3)</span>
+            </div>
+          </div>
+          <div class="srow" style="background:rgba(83,148,255,0.05);border-left:3px solid #5394ff;">
+            <div class="scell-name"><span class="sparam" style="color:#5394ff;">⏯ Bắt đầu Level 2 từ lệnh thứ</span></div>
+            <div class="scell-def"><span class="sdef" style="color:#5394ff;">#2</span></div>
+            <div class="scell-desc">
+              Từ lệnh thứ bao nhiêu thì chuyển sang dùng hệ số LV2. Mặc định = 2 nghĩa là ngay từ lệnh thứ 2 đã dùng LV2.
+              <span class="stip tip-blue">💡 Giảm tốc độ tăng lot để kiểm soát rủi ro</span>
+            </div>
+          </div>
+          <div class="srow" style="background:rgba(83,148,255,0.05);border-left:3px solid #5394ff;">
+            <div class="scell-name"><span class="sparam" style="color:#5394ff;">Hệ số nhân lot — Level 2</span></div>
+            <div class="scell-def"><span class="sdef" style="color:#5394ff;">×1.3</span></div>
+            <div class="scell-desc">
+              Hệ số nhân nhỏ hơn — giúp chuỗi lot tăng chậm hơn ở giai đoạn giữa, giảm áp lực vốn khi sideway kéo dài.
+              <span class="stip tip-yellow">⚡ Ví dụ: 0.09 → 0.12 → 0.15 → 0.20...</span>
+            </div>
+          </div>
+          <div class="srow" style="background:rgba(246,70,93,0.05);border-left:3px solid var(--sell);">
+            <div class="scell-name"><span class="sparam" style="color:var(--sell);">⏯ Bắt đầu Level 3 từ lệnh thứ</span></div>
+            <div class="scell-def"><span class="sdef" style="color:var(--sell);">#6</span></div>
+            <div class="scell-desc">
+              Từ lệnh thứ này trở đi, EA tăng tốc nhân lot để đẩy nhanh phục hồi vốn khi chu kỳ đã quá dài.
+              <span class="stip tip-red">⚠ Cần chuẩn bị vốn dự phòng trước LV3</span>
+            </div>
+          </div>
+          <div class="srow" style="background:rgba(246,70,93,0.05);border-left:3px solid var(--sell);">
+            <div class="scell-name"><span class="sparam" style="color:var(--sell);">Hệ số nhân lot — Level 3</span></div>
+            <div class="scell-def"><span class="sdef" style="color:var(--sell);">×1.6</span></div>
+            <div class="scell-desc">
+              Hệ số tăng trở lại — tạo lợi thế lot lớn khi giá cuối cùng breakout. Lot lớn hơn = phục hồi nhanh hơn, nhưng rủi ro cao hơn.
+              <span class="stip tip-red">⚠ Chỉ dùng khi có đủ vốn dự phòng</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ TAB: KHUNG GIỜ ══ -->
+        <div id="tab-gio" class="stab-panel" style="display:none;">
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Giờ bắt đầu giao dịch (GMT+7)</span></div>
+            <div class="scell-def"><span class="sdef">00:00</span></div>
+            <div class="scell-desc">
+              Giờ EA bắt đầu được phép nhận lệnh mới (theo giờ Việt Nam GMT+7). Ngoài khung giờ này, EA sẽ không mở lệnh mới nhưng vẫn quản lý lệnh đang mở.
+              <span class="stip tip-green">✓ Khuyến nghị bắt đầu từ 8:00 GMT+7</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Giờ dừng nhận lệnh mới (GMT+7)</span></div>
+            <div class="scell-def"><span class="sdef">23:59</span></div>
+            <div class="scell-desc">
+              Giờ EA ngừng mở lệnh mới. Sau giờ này, các lệnh đang mở vẫn được quản lý bình thường, chỉ không vào thêm lệnh mới.
+              <span class="stip tip-yellow">⚡ Tránh khung 22h–2h GMT+7 (news Mỹ/EU)</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Timeframe giới hạn Hed</span></div>
+            <div class="scell-def"><span class="sdef">M1</span></div>
+            <div class="scell-desc">
+              Timeframe dùng để đếm số lệnh hedge trong mỗi nến. Kết hợp với "Max lệnh Hedging/nến" để tránh vào quá nhiều lệnh trong 1 nến.
+              <span class="stip tip-blue">💡 M1 = kiểm tra mỗi phút, M5 = mỗi 5 phút</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Max lệnh Hedging/nến</span></div>
+            <div class="scell-def"><span class="sdef">1</span></div>
+            <div class="scell-desc">
+              Số lượng lệnh hedge tối đa được phép mở trong 1 nến của timeframe đã chọn. Giúp tránh EA vào liên tiếp nhiều lệnh khi giá biến động mạnh đột ngột.
+              <span class="stip tip-green">✓ Giữ = 1 để an toàn</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ TAB: THOÁT LỆNH ══ -->
+        <div id="tab-thoat" class="stab-panel" style="display:none;">
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Kiểu thoát lệnh</span></div>
+            <div class="scell-def"><span class="sdef">SL/TP RR</span></div>
+            <div class="scell-desc">
+              <b style="color:var(--text1)">Trailing Stop:</b> EA dùng đường trailing bám theo giá, chốt lãi khi giá quay đầu cán trail.<br>
+              <b style="color:var(--text1)">SL/TP cố định theo RR:</b> EA đặt TP/SL theo tỷ lệ RR cố định dựa trên biên độ zone.
+              <span class="stip tip-blue">💡 Chế độ RR ổn định hơn cho trader mới</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Tỷ lệ RR (1R = biên độ vùng Hed)</span></div>
+            <div class="scell-def"><span class="sdef">2</span></div>
+            <div class="scell-desc">
+              Khi dùng chế độ SL/TP cố định, EA đặt TP = RR × biên độ zone kể từ điểm hoà vốn. RR = 2 nghĩa là lãi = 2× zone.
+              <span class="stip tip-green">✓ Zone 200pip + RR2 → TP cách BE 400pip</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Chốt lãi toàn bộ ($)</span></div>
+            <div class="scell-def"><span class="sdef">$250</span></div>
+            <div class="scell-desc">
+              Khi tổng floating P&L đạt mức này, EA tự động đóng tất cả lệnh và chốt lãi bất kể đang ở phase nào.
+              <span class="stip tip-yellow">⚡ $1000 vốn → target $100–200 là hợp lý</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Cắt lỗ toàn bộ (-$)</span></div>
+            <div class="scell-def"><span class="sdef">-1,000,000</span></div>
+            <div class="scell-desc">
+              Ngưỡng thua lỗ khẩn cấp. Khi floating âm vượt qua mức này, EA đóng tất cả. Mặc định rất lớn = không giới hạn.
+              <span class="stip tip-red">⚠ $1000 vốn → nên cài -300 đến -500</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Số lệnh kích hoạt hòa vốn</span></div>
+            <div class="scell-def"><span class="sdef">9</span></div>
+            <div class="scell-desc">
+              Khi số lệnh mở đạt ngưỡng này và P&L ≥ mức lãi tối thiểu (beProfit), EA sẽ đóng tất cả ở mức hoà vốn hoặc lãi nhỏ để thoát an toàn.
+              <span class="stip tip-blue">💡 Thoát sớm khi chuỗi lệnh quá dài</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Lãi tối thiểu để hòa vốn ($)</span></div>
+            <div class="scell-def"><span class="sdef">$1</span></div>
+            <div class="scell-desc">
+              Mức lãi tối thiểu cần đạt trước khi kích hoạt cắt hoà vốn. Tránh đóng lệnh khi P&L âm hoặc = 0.
+              <span class="stip tip-green">✓ Giữ ở $1–$5 là phù hợp</span>
+            </div>
+          </div>
+          <div class="srow" style="border-top:1px solid var(--border);background:rgba(167,139,250,0.04);">
+            <div class="scell-name"><span class="sparam" style="color:var(--trail);">Bước dịch Trailing (pip)</span></div>
+            <div class="scell-def"><span class="sdef" style="color:var(--trail);">30</span></div>
+            <div class="scell-desc">
+              <i style="color:var(--text4);font-size:11px;">[Chỉ dùng khi Kiểu thoát = Trailing Stop]</i><br>
+              Trailing chỉ cập nhật khi giá di chuyển thêm số pip này. Bước nhỏ = bảo vệ sát hơn, bước lớn = gồng lãi xa hơn.
+              <span class="stip" style="background:var(--trail-dim);color:var(--trail);border-color:rgba(167,139,250,0.3);">🛡 30 pip = khoảng $3 với 0.01 lot XAUUSD</span>
+            </div>
+          </div>
+          <div class="srow" style="background:rgba(167,139,250,0.04);">
+            <div class="scell-name"><span class="sparam" style="color:var(--trail);">Dùng Trailing ảo</span></div>
+            <div class="scell-def"><span class="sdef" style="color:var(--trail);">true</span></div>
+            <div class="scell-desc">
+              <i style="color:var(--text4);font-size:11px;">[Chỉ dùng khi Kiểu thoát = Trailing Stop]</i><br>
+              Bật = EA vẽ đường trailing ảo tức thì trên chart (không đặt SL thật vào broker). Khi giá cán đường ảo → EA đóng tất cả bằng lệnh market.
+              <span class="stip" style="background:var(--trail-dim);color:var(--trail);border-color:rgba(167,139,250,0.3);">🛡 Tránh bị broker nhìn thấy SL, phản ứng nhanh hơn</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ TAB: TỈA LỆNH ══ -->
+        <div id="tab-tia" class="stab-panel" style="display:none;">
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Tổng lệnh để kích hoạt tỉa</span></div>
+            <div class="scell-def"><span class="sdef">4</span></div>
+            <div class="scell-desc">
+              Tính năng Tỉa Lệnh chỉ hoạt động khi tổng số lệnh đang mở ≥ con số này. Ngăn EA tỉa lệnh quá sớm khi vừa mới bắt đầu chu kỳ.
+              <span class="stip tip-blue">💡 Mặc định 4 — tức là cần ít nhất 4 lệnh mới tỉa</span>
+            </div>
+          </div>
+          <div class="srow">
+            <div class="scell-name"><span class="sparam">Lãi tối thiểu tỉa 2 lệnh cuối ($)</span></div>
+            <div class="scell-def"><span class="sdef">$10</span></div>
+            <div class="scell-desc">
+              EA tự động đóng 2 lệnh mở gần nhất khi tổng lãi của 2 lệnh đó ≥ mức này. Giúp giảm lot đang giữ và chốt lãi một phần mà không cần đóng toàn bộ.
+              <span class="stip tip-green">✓ Giảm rủi ro, giải phóng margin ngay lập tức</span>
+            </div>
+          </div>
+          <div class="srow" style="background:rgba(14,203,129,0.04);">
+            <div class="scell-name" colspan="3" style="padding:12px 18px;">
+              <div style="font-family:var(--mono);font-size:10px;color:var(--text4);margin-bottom:8px;">CÁC NÚT ĐIỀU KHIỂN TRỰC TIẾP TRÊN CHART</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(14,203,129,0.12);border:1px solid rgba(14,203,129,0.3);color:var(--buy);padding:4px 12px;border-radius:4px;">▲ Buy — Bắt đầu Buy thủ công</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.3);color:var(--sell);padding:4px 12px;border-radius:4px;">▼ Sell — Bắt đầu Sell thủ công</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(240,185,11,0.1);border:1px solid var(--border2);color:var(--gold);padding:4px 12px;border-radius:4px;">✔ Auto — Bật/tắt tự động</span>
+                <span style="font-family:var(--mono);font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:4px;">Pause — Tạm dừng lệnh mới</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(100,140,180,0.12);border:1px solid rgba(100,140,180,0.3);color:#6496c8;padding:4px 12px;border-radius:4px;">Tỉa Lệnh — Tỉa thủ công ngay</span>
+                <span style="font-family:var(--mono);font-size:11px;background:rgba(196,128,0,0.12);border:1px solid rgba(196,128,0,0.3);color:#c48000;padding:4px 12px;border-radius:4px;">Close All — Đóng toàn bộ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end panels wrapper -->
+    </div><!-- end settingsUI -->
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label reveal">TÍNH NĂNG</div>
+    <h2 class="reveal">Full-Featured <span class="accent">Engine</span></h2>
+    <p class="section-desc reveal">Thiết kế riêng cho XAUUSD — biên độ lớn, cần chiến lược hedge chính xác.</p>
+    <div class="feat-grid reveal">
+      <div class="feat-card"><div class="feat-icon">📊</div><div class="feat-title">Auto Sideway Detection</div><p class="feat-desc">Tự nhận diện Sideway qua 16+ điểm tham chiếu. Breakout → vào lệnh tức thì đúng hướng giá.</p></div>
+      <div class="feat-card"><div class="feat-icon">📈</div><div class="feat-title">3 Level Lot Scaling</div><p class="feat-desc"><span style="color:#5394ff">LV1 ×2.0</span> (1–3) · <span style="color:var(--gold)">LV2 ×1.3</span> (4–8) · <span style="color:var(--sell)">LV3 ×1.6</span> (9+). Tối đa 12 lot/lệnh, 16 lệnh.</p></div>
+      <div class="feat-card"><div class="feat-icon">🛡️</div><div class="feat-title">TrailingStop 2 Lớp</div><p class="feat-desc">Đường ảo tức thì + trailing thực bước 30 pips. Gồng lãi tối đa khi XAUUSD break mạnh.</p></div>
+      <div class="feat-card"><div class="feat-icon">✂️</div><div class="feat-title">Tỉa Lệnh (Trim)</div><p class="feat-desc">Đóng 2 lệnh mới nhất khi đạt profit $10. Giảm rủi ro tức thì không cần đóng toàn bộ.</p></div>
+      <div class="feat-card"><div class="feat-icon">🕐</div><div class="feat-title">Giờ Giao Dịch GMT+7</div><p class="feat-desc">Cài khung giờ theo GMT+7. Auto ngưng ngoài giờ — tránh biến động news XAUUSD mạnh.</p></div>
+      <div class="feat-card"><div class="feat-icon">🖥️</div><div class="feat-title">Binance Dark Panel</div><p class="feat-desc">Canvas real-time kéo thả: equity, P&L Buy/Sell, Hedging Zone, floating & daily profit.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOT CALCULATOR — Vấn đề 5: Floating đúng theo nguyên tắc hedging -->
+<section id="lot">
+  <div class="container">
+    <div class="section-label reveal">BẢNG LOT</div>
+    <h2 class="reveal">Lot Scaling <span class="accent">Calculator</span></h2>
+    <p class="section-desc reveal">Tính floating tại thời điểm mở từng lệnh: các lệnh cùng side đang ở breakeven, lệnh ngược side đang lỗ 1 zone. Nhập cấu hình và nhấn Tính Toán.</p>
+    <div class="lot-layout reveal">
+      <div class="calc-panel">
+        <div class="calc-hdr">⚙ CẤU HÌNH LOT — XAUUSD</div>
+        <div class="calc-body">
+          <div class="inp-row">
+            <label class="inp-lbl">LOT BẮT ĐẦU</label>
+            <input class="inp-f" id="c_lot0" type="number" value="0.01" min="0.01" step="0.01">
+          </div>
+          <div class="inp-row">
+            <label class="inp-lbl">HEDGING ZONE (pips XAUUSD)</label>
+            <input class="inp-f" id="c_zone" type="number" value="200" min="50" step="50">
+          </div>
+          <div class="inp-row">
+            <label class="inp-lbl">GIÁ TRỊ 1 PIP (USD/lot)</label>
+            <input class="inp-f" id="c_pipval" type="number" value="1" min="0.1" step="0.1">
+          </div>
+          <div class="note-box">
+            XAUUSD: 1 lot = $10/pip (tiêu chuẩn) · 0.01 lot = $0.10/pip<br>
+            Broker khác nhau có thể khác — kiểm tra ContractSize.
+          </div>
+          <div class="inp-row">
+            <label class="inp-lbl">LV1 HỆ SỐ × (lệnh 1 → LV2-1)</label>
+            <input class="inp-f" id="c_m1" type="number" value="2.0" min="1" step="0.1">
+          </div>
+          <div class="inp-g2">
+            <div class="inp-row" style="margin-bottom:0">
+              <label class="inp-lbl">LV2 BẮT ĐẦU #</label>
+              <input class="inp-f" id="c_lv2s" type="number" value="4" min="2" step="1">
+            </div>
+            <div class="inp-row" style="margin-bottom:0">
+              <label class="inp-lbl">LV2 HỆ SỐ ×</label>
+              <input class="inp-f" id="c_m2" type="number" value="1.3" min="1" step="0.1">
+            </div>
+          </div>
+          <div style="height:9px;"></div>
+          <div class="inp-g2">
+            <div class="inp-row" style="margin-bottom:0">
+              <label class="inp-lbl">LV3 BẮT ĐẦU #</label>
+              <input class="inp-f" id="c_lv3s" type="number" value="9" min="3" step="1">
+            </div>
+            <div class="inp-row" style="margin-bottom:0">
+              <label class="inp-lbl">LV3 HỆ SỐ ×</label>
+              <input class="inp-f" id="c_m3" type="number" value="1.6" min="1" step="0.1">
+            </div>
+          </div>
+          <div style="height:12px;"></div>
+          <button class="calc-btn" onclick="calcLot()">▶ TÍNH TOÁN</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="lot-tbl">
+          <thead>
+            <tr>
+              <th>#LỆNH</th><th>LEVEL</th><th>LOẠI</th><th>LOT LỆNH</th><th>FLOATING (tại thời điểm mở)</th>
+            </tr>
+          </thead>
+          <tbody id="lotTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="section-label reveal" style="justify-content:center;padding-left:18px;">LIÊN HỆ & DỊCH VỤ</div>
+    <h2 class="reveal" style="text-align:center;">Liên Hệ <span class="accent">TCode</span></h2>
+    <p class="section-desc reveal" style="margin:0 auto 32px;text-align:center;max-width:600px;">
+      Nhận EA, tư vấn chiến thuật và hỗ trợ kỹ thuật vận hành bot XAUUSD trực tiếp.
+    </p>
+
+    <div class="reveal" style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:22px 28px;max-width:700px;margin:0 auto 28px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:1.5px;margin-bottom:14px;">DỊCH VỤ</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
+          <div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Code Bot/Tool MT4, MT5</div>
+            <div style="font-size:12px;color:var(--text3);">Nhận code theo yêu cầu — EA, indicator, script tùy chỉnh</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
+          <div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Tư Vấn Chiến Thuật</div>
+            <div style="font-size:12px;color:var(--text3);">Thiết kế & tối ưu chiến lược hedging, grid, martingale</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
+          <div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Hỗ Trợ Vận Hành Bot</div>
+            <div style="font-size:12px;color:var(--text3);">Cài đặt, cấu hình, debug EA trên VPS và MetaTrader</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="color:var(--buy);font-size:14px;margin-top:1px;">✓</span>
+          <div>
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text1);margin-bottom:2px;">Nhóm Trading Cộng Đồng</div>
+            <div style="font-size:12px;color:var(--text3);">Chia sẻ tín hiệu, chiến lược XAUUSD theo từng phiên</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;margin:0 auto 28px;">
+      <a href="tel:0964822327" class="cta-card">
+        <span class="cta-icon">📞</span>
+        <div class="cta-lbl">Zalo</div>
+        <div class="cta-val">0964 822 327</div>
+      </a>
+      <a href="https://t.me/tCode_T95" target="_blank" class="cta-card">
+        <span class="cta-icon">✈️</span>
+        <div class="cta-lbl">Telegram</div>
+        <div class="cta-val">t.me/tCode_T95</div>
+      </a>
+      <a href="mailto:tcodefx.auto@gmail.com" class="cta-card">
+        <span class="cta-icon">📧</span>
+        <div class="cta-lbl">Email</div>
+        <div class="cta-val">tcodefx.auto<br>@gmail.com</div>
+      </a>
+    </div>
+
+    <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:700px;margin:0 auto 28px;">
+      <a href="https://t.me/TCode_TradingHeBot" target="_blank" class="cta-card" style="border-color:rgba(14,203,129,0.25);">
+        <span class="cta-icon">🤖</span>
+        <div class="cta-lbl" style="color:var(--buy);">Nhóm Trading Hệ Bot</div>
+        <div class="cta-val">t.me/TCode_TradingHeBot</div>
+      </a>
+      <a href="https://t.me/+3iZn3jSexOMzMzc1" target="_blank" class="cta-card" style="border-color:rgba(167,139,250,0.25);">
+        <span class="cta-icon">📊</span>
+        <div class="cta-lbl" style="color:var(--trail);">Nhóm Chuyên Hedging</div>
+        <div class="cta-val">Tham gia nhóm riêng</div>
+      </a>
+    </div>
+
+    <div class="disclaimer reveal">
+      <span class="warn">⚠</span> Giao dịch XAUUSD có rủi ro rất cao. Hãy hiểu rõ chiến lược Hedging trước khi dùng vốn thật.<br>
+      EA chỉ là công cụ hỗ trợ — quản lý vốn và rủi ro là trách nhiệm của trader.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>TCode</span> Hedging Master EA · XAUUSD MT5 · v2.6 &nbsp;·&nbsp; t.me/TCode_TradingHeBot
+</footer>
+
+<!-- ════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════ -->
 <script>
-function calc(){
-    const start = document.getElementById("start").value;
-    const lot0 = parseFloat(document.getElementById("lot0").value);
-    const k = parseFloat(document.getElementById("k").value);
-    const zone = parseFloat(document.getElementById("zone").value);
-    const value = parseFloat(document.getElementById("value").value);
-    const n = parseInt(document.getElementById("n").value);
+/* ══ SCROLL REVEAL ══ */
+const ro = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const sibs = [...e.target.parentNode.children].filter(c => c.classList.contains('reveal'));
+    e.target.style.transitionDelay = (sibs.indexOf(e.target) * 70) + 'ms';
+    e.target.classList.add('visible');
+    ro.unobserve(e.target);
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 
-    let orders = [];
-    let type = start;
-    let lot = lot0;
 
-    for(let i=0;i<=n;i++){
-        orders.push({type, lot});
-        type = type==="BUY" ? "SELL" : "BUY";
-        lot *= k;
-    }
-
-    let tbody = document.getElementById("result");
-    tbody.innerHTML = "";
-
-    for(let i=0;i<orders.length;i++){
-        let loss = 0;
-        let curType = orders[i].type;
-
-        for(let j=0;j<i;j++){
-            if(orders[j].type !== curType){
-                loss -= orders[j].lot * zone * value;
-            }
-        }
-
-        let bePoint = loss===0 ? 0 :
-            Math.abs(loss) / (orders[i].lot * value);
-
-        tbody.innerHTML += `
-        <tr>
-            <td>${i}</td>
-            <td class="${orders[i].type==="BUY"?"buy":"sell"}">${orders[i].type}</td>
-            <td>${orders[i].lot.toFixed(2)}</td>
-            <td class="loss">${loss.toFixed(2)}</td>
-            <td>${orders[i].type==="BUY"?"↑":"↓"} ${bePoint.toFixed(1)}</td>
-        </tr>`;
-    }
+/* ══ SETTINGS TABS ══ */
+function switchTab(tabId) {
+  document.querySelectorAll('.stab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabId).style.display = 'block';
+  document.querySelector('.stab[data-tab="' + tabId + '"]').classList.add('active');
 }
 </script>
+<script>
+/* ══ LOT CALCULATOR ══ */
+function calcLot() {
+  const lot0   = parseFloat(document.getElementById('c_lot0').value)  || 0.01;
+  const zone   = parseFloat(document.getElementById('c_zone').value)  || 200;
+  const pipval = parseFloat(document.getElementById('c_pipval').value)|| 1.0;
+  const m1     = parseFloat(document.getElementById('c_m1').value)    || 2.0;
+  const lv2s   = parseInt(document.getElementById('c_lv2s').value)    || 4;
+  const m2     = parseFloat(document.getElementById('c_m2').value)    || 1.3;
+  const lv3s   = parseInt(document.getElementById('c_lv3s').value)    || 9;
+  const m3     = parseFloat(document.getElementById('c_m3').value)    || 1.6;
 
+  const tbody = document.getElementById('lotTbody');
+  tbody.innerHTML = '';
+
+  // Build lot sequence
+  const lots = [];
+  let lot = lot0;
+  for (let i = 1; i <= 16; i++) {
+    lot = +Math.min(lot, 12).toFixed(2);
+    lots.push(lot);
+    const mul = i < lv2s ? m1 : i < lv3s ? m2 : m3;
+    lot = +Math.min(+(lot * mul).toFixed(2), 12).toFixed(2);
+  }
+
+  // Assign order types: alternating Buy/Sell starting with Buy
+  // Odd orders (1,3,5...) = Buy, Even orders (2,4,6...) = Sell
+  // (Based on hedging logic: first order is Buy, then alternate)
+  const orderTypes = lots.map((_, i) => (i % 2 === 0) ? 'buy' : 'sell');
+
+  // Compute floating at each order's opening moment
+  let cumLot = 0;
+  for (let i = 0; i < 16; i++) {
+    const orderNum   = i + 1;
+    const thisLot    = lots[i];
+    const thisType   = orderTypes[i];
+    const oppositeType = thisType === 'buy' ? 'sell' : 'buy';
+
+    // Sum of lots for all PREVIOUS orders that are opposite to this order
+    let oppositeLotSum = 0;
+    for (let j = 0; j < i; j++) {
+      if (orderTypes[j] === oppositeType) {
+        oppositeLotSum += lots[j];
+      }
+    }
+    oppositeLotSum = +oppositeLotSum.toFixed(4);
+
+    const floating = -(zone * oppositeLotSum * pipval);
+    cumLot = +(cumLot + thisLot).toFixed(2);
+
+    let badge;
+    if (orderNum < lv2s)       badge = `<span class="lv-badge lv1">LV1</span>`;
+    else if (orderNum < lv3s)  badge = `<span class="lv-badge lv2">LV2</span>`;
+    else                       badge = `<span class="lv-badge lv3">LV3</span>`;
+
+    const typeLabel = thisType === 'buy'
+      ? `<span style="color:var(--buy);font-weight:700;font-family:var(--mono);font-size:11px;">▲ BUY</span>`
+      : `<span style="color:var(--sell);font-weight:700;font-family:var(--mono);font-size:11px;">▼ SELL</span>`;
+
+    let floatCell;
+    if (floating === 0) {
+      floatCell = `<span style="color:var(--text3)">$0.00</span>`;
+    } else {
+      floatCell = `<span class="f-neg">-$${Math.abs(floating).toFixed(2)}</span>`;
+    }
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--text3);font-weight:700">#${String(orderNum).padStart(2,'0')}</td>
+      <td>${badge}</td>
+      <td>${typeLabel}</td>
+      <td style="color:var(--text1);font-weight:700">${thisLot.toFixed(2)}</td>
+      <td>${floatCell}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+calcLot();
+</script>
 </body>
 </html>
